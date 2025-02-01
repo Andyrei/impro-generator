@@ -101,7 +101,7 @@ export async function POST( req: NextRequest) {
   const id = data.length + 1;
 
   // Add the new item to the data array
-  let newData = [id.toString(), titleEN, titleIT, difficulty ];
+  const newData = [id.toString(), titleEN, titleIT, difficulty ];
 
   fs.appendFileSync(csvFilePath, '\n' + newData.join(','));  
 
