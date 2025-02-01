@@ -3,13 +3,21 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Plus } from 'lucide-react';
 
+interface FabAction {
+  icon: React.ElementType;
+  label: string;
+  onClick: () => void;
+}
+
+interface FabButtonProps {
+  fabActions?: FabAction[];
+  onFabClick?: () => void;
+}
+
 export default function FabButton({ 
   fabActions,
   onFabClick
-}:{
-  fabActions?: { icon: any, label: string, onClick: () => void }[],
-  onFabClick?: () => void
-}) {
+}: FabButtonProps) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const fabRef = useRef<HTMLButtonElement>(null);  
