@@ -1,0 +1,189 @@
+Id,eng,ita,difficulty
+1,Beach,Spiaggia,10
+2,Park,Parco,15
+3,Mountain,Montagna,30
+4,Hills,Colline,25
+5,Sky,Cielo,40
+6,Ocean,Oceano,35
+7,Stadium,Stadio,20
+8,River,Fiume,25
+9,Lake,Lago,20
+10,Ford,Guado,30
+11,Street,Strada,10
+12,Heaven,Paradiso,90
+13,Hell,Inferno,90
+14,Purgatory,Purgatorio,85
+15,Temple,Tempio,40
+16,Church,Chiesa,20
+17,Countryside,Campagna,25
+18,City,Città,15
+19,Jungle,Giungla,50
+20,Desert Island,Isola Deserta,60
+21,Tropical Island,Isola Tropicale,45
+22,Forest,Foresta,40
+23,Plains,Pianure,20
+24,Swamp,Palude,45
+25,Wasteland,Terra Desolata,60
+26,Desert,Deserto,50
+27,Underground,Sottoterra,55
+28,Cave,Caverna,45
+29,Glacier,Ghiacciaio,50
+30,Volcano,Vulcano,65
+31,Geyser,Geyser,55
+32,Hot Springs,Sorgenti Termali,35
+33,Outer Space,Spazio Esterno,95
+34,Different Planet,Pianeta Diverso,100
+35,Spaceship,Astronave,80
+36,Alien Ship,Nave Aliena,90
+37,Slums,Baraccopoli,50
+38,Disco,Discoteca,25
+39,North Pole,Polo Nord,70
+40,South Pole,Polo Sud,70
+41,Bus Stop,Fermata dell'autobus,10
+42,Foreign Country,Paese Straniero,40
+43,Lighthouse,Faro,40
+44,Monastery,Monastero,45
+45,Barracks,Caserma,35
+46,Pyramid,Piramide,55
+47,Ancient Ruins,Rovine Antiche,50
+48,Meadow,Prato,20
+49,Rainforest,Foresta Pluviale,60
+50,Savannah,Savana,55
+51,Waterfall,Cascata,40
+52,Sauna,Sauna,30
+53,Swimming Pool,Piscina,15
+54,Pond,Stagno,15
+55,Farm,Fattoria,10
+56,Factory,Fabbrica,20
+57,Police Station,Stazione di Polizia,25
+58,Hospital,Ospedale,25
+59,Ambulance,Ambulanza,30
+60,Surgery Theatre,Sala Operatoria,40
+61,Firehouse,Caserma dei Pompieri,25
+62,Fire Engine,Camion dei Pompieri,30
+63,Army Base,Base Militare,40
+64,Gym,Palestra,15
+65,Swimming Pool,Piscina,15
+66,Office Building,Edificio Uffici,20
+67,School,Scuola,15
+68,Library,Biblioteca,20
+69,Antique Store,Negozio di Antiquariato,30
+70,Supermarket,Supermercato,10
+71,Convenience Store,Minimarket,10
+72,Art Gallery,Galleria d'Arte,25
+73,Museum,Museo,25
+74,Movie Theatre,Cinema,20
+75,Bar,Bar,15
+76,Restaurant,Ristorante,15
+77,Luxury Restaurant,Ristorante di lusso,35
+78,Gas Station,Stazione di Servizio,15
+79,Art & Craft Store,Negozio di Arte e Artigianato,20
+80,Art Supply Store,Negozio di Forniture per Belle Arti,20
+81,Studio,Studio,20
+82,Motel,Motel,20
+83,Hotel,Hotel,20
+84,Construction Site,Cantiere Edile,25
+85,Preschool,Scuola Materna,15
+86,Kindergarten,Asilo,15
+87,Clock Shop,Negozio di Orologi,25
+88,Watch Shop,Orologeria,25
+89,Theatre,Teatro,25
+90,News Studio,Studio Notizie,30
+91,TV Station,Stazione TV,30
+92,Satellite,Satellite,60
+93,Space Station,Stazione Spaziale,80
+94,Bike Store,Negozio di Biciclette,15
+95,Car Lot,Concessionaria Auto,20
+96,Diner,Tavola Calda,15
+97,Cafe,Caffè,15
+98,Truckstop,Autogrill,20
+99,Strip Club,Strip Club,40
+100,Golf Course,Campo da Golf,25
+101,Arena,Arena,25
+102,Vineyard,Vigneto,20
+103,Brewery,Birrificio,25
+104,Orchard,Frutteto,20
+105,Ranch,Ranch,25
+106,Furniture Store,Negozio di Mobili,20
+107,Second Hand Shop,Negozio dell'Usato,20
+108,Soup Kitchen,Mensa dei Poveri,25
+109,Tavern,Taverna,20
+110,Street Corner,Angolo di Strada,10
+111,Mechanic,Meccanico,20
+112,IT Department,Reparto IT,25
+113,Server Room,Sala Server,35
+114,Movie Set,Set Cinematografico,35
+115,Editing Studio,Studio di Montaggio,30
+116,Photograph Studio,Studio Fotografico,25
+117,Hobby Store,Negozio di Hobby,20
+118,Lumber Yard,Deposito di Legname,25
+119,Hardware Store,Ferramenta,15
+120,PC Store,Negozio di Informatica,20
+121,Video Rental Store,Videoteca,20
+122,Tech Support,Supporto Tecnico,25
+123,Telemarketers Office,Ufficio di Telemarketing,25
+124,Tech Startup,Startup Tecnologica,30
+125,Fishing Boat,Barca da Pesca,30
+126,Karate Dojo,Dojo di Karate,25
+127,Boxing Gym,Palestra di Boxe,25
+128,Wrestling Ring,Ring di Wrestling,25
+129,Boxing Ring,Ring di Boxe,25
+130,Press Conference,Conferenza Stampa,30
+131,Horse Ranch,Allevamento di Cavalli,25
+132,Radio Studio,Studio Radiofonico,30
+133,China Shop,Negozio di Porcellane,30
+134,Nail Salon,Salone di Manicure,20
+135,Hair Salon,Parrucchiere,20
+136,Barber,Barbiere,20
+137,Beauty Parlour,Centro Estetico,20
+138,Garbage Truck,Camion della Spazzatura,25
+139,The Dump,La Discarica,35
+140,Junkyard,Deposito di Rottami,30
+141,Car Wrecker,Sfasciacarrozze,30
+142,Airport,Aeroporto,30
+143,Train Station,Stazione Ferroviaria,25
+144,Tv Studio,Studio Televisivo,30
+145,Talk show set,Set di un talk show,35
+146,Movie Set,Set cinematografico,35
+147,Backstage,Dietro le quinte,30
+148,Rock Concert,Concerto Rock,30
+149,Amphitheatre,Anfiteatro,30
+150,Garden Shed,Casetta da Giardino,15
+151,Emergency Room,Pronto Soccorso,35
+152,Fire Truck,Autopompa,30
+153,Police Cruiser,Auto della Polizia,30
+154,County Jail,Prigione Contea,40
+155,Prison Cell,Cella di Prigione,40
+156,Chapel,Cappella,20
+157,Funeral Home,Casa Funeraria,35
+158,Morgue,Obitorio,40
+159,Wedding,Matrimonio,25
+160,Timeshare,Multiproprietà,30
+161,Locker Room,Spogliatoio,20
+162,Government Office,Ufficio Governativo,25
+163,Court of law,Tribunale,35
+164,Courthouse steps,Scalinata del tribunale,30
+165,Law Office,Studio Legale,25
+166,Accountants firm,Studio Commercialista,25
+167,Alcoholics anonymous,Alcolisti Anonimi,35
+168,Hydro Power Plant,Centrale Idroelettrica,40
+169,Nuclear Power Plant,Centrale Nucleare,50
+170,Dam,Diga,35
+171,Wind Farm,Parco Eolico,30
+172,Bird Sanctuary,Oasi Naturale,25
+173,Zoo,Zoo,20
+174,Brothel,Casa di Tolleranza,45
+175,Market,Mercato,15
+176,Tanning Salon,Centro Abbronzatura,20
+177,Dentist,Dentista,20
+178,Wig Store,Negozio di Parrucche,25
+179,Tailor,Sarto,20
+180,Ad agency,Agenzia Pubblicitaria,25
+181,Laundromat,Lavanderia a Gettoni,15
+182,Dry Cleaner,Lavanderia a Secco,20
+183,Pawn Shop,Pegno,20
+184,Beer Garden,Birreria,20
+185,Brewery,Birrificio, 38
+186,submarine, sottomarino, 75
+187,cruise ship, nave da crociera, 50
+188,Antique National Library, Biblioteca Nazionale Antica, 49

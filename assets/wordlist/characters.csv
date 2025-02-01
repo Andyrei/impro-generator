@@ -1,0 +1,317 @@
+Id,eng,ita,difficulty
+1,Vampire,Vampiro,60
+2,Frankenstein,Frankenstein,60
+3,Cyborg,Cyborg,50
+4,Pirate,Pirata,40
+5,Knight,Cavaliere,40
+6,Soldier,Soldato,30
+7,Barista,Barista,15
+8,Ninja,Ninja,50
+9,Engineer,Ingegnere,30
+10,Werewolf,Lupo Mannaro,60
+11,Cartoon character,Personaggio dei cartoni animati,30
+12,Doctor,Dottore,25
+13,Nurse,Infermiere,25
+14,Peasant,Contadino,20
+15,Lord,Signore,40
+16,Drug dealer,Spacciatore,40
+17,Mafioso,Mafioso,45
+18,Police officer,Agente di polizia,30
+19,Undercover police officer,Agente di polizia sotto copertura,40
+20,Prisoner,Prigioniero,40
+21,Prison snitch,Spia della prigione,45
+22,Bank teller,Cassiere di banca,20
+23,Lawyer,Avvocato,30
+24,Judge,Giudice,35
+25,Super villain,Supercattivo,60
+26,Super hero,Supereroe,60
+27,Wizard,Mago,50
+28,Witch,Strega,50
+29,Ogre,Orco,50
+30,Orc,Orco,50
+31,Goblin,Goblin,45
+32,Troll,Troll,50
+33,Charlatan magician,Ciarlatano mago,35
+34,Poker player,Giocatore di poker,30
+35,Gambler,Giocatore d'azzardo,35
+36,Demigod,Semidio,70
+37,God,Dio,80
+38,Devil,Diavolo,80
+39,Angel,Angelo,70
+40,Demon,Demone,70
+41,Child,Bambino,10
+42,Librarian,Bibliotecario,20
+43,Shoemaker,Calzolaio,25
+44,Blacksmith,Fabbro,30
+45,Prince,Principe,40
+46,Princess,Principessa,40
+47,Yeti,Yeti,60
+48,King kong,King Kong,70
+49,Godzilla,Godzilla,80
+50,Schizophrenic,Schizofrenico,40
+51,Kleptomaniac,Cleptomane,35
+52,Petty thief,Ladro di poco conto,30
+53,Thug,Teppista,35
+54,Pickpocket,Borsaiolo,30
+55,Baker,Panettiere,20
+56,Candlestick maker,Fabbricante di candele,30
+57,Shoe repair man,Calzolaio riparatore,25
+58,Exterminator,Disinfestatore,25
+59,Construction worker,Operaio edile,20
+60,Laborer,Operaio,20
+61,Herbalist,Erborista,30
+62,Mugger,Aggressore,35
+63,Kung fu fighter,Combattente di kung fu,40
+64,Pro wrestler,Wrestler professionista,35
+65,Movie star,Star del cinema,35
+66,Struggling actor,Attore squattrinato,30
+67,Singer,Cantante,25
+68,Musician,Musicista,25
+69,Rock star,Rock star,35
+70,Pop idol,Idolo pop,35
+71,Former boy band member,Ex membro di una boy band,30
+72,Current boy band member,Membro attuale di una boy band,30
+73,Teen heartthrob,Idolo delle teenager,30
+74,Tour-guide,Guida turistica,25
+75,Real estate agent,Agente immobiliare,25
+76,Stripper,Stripper,35
+77,Dancer,Ballerino,25
+78,Tap dancer,Ballerino di tip tap,30
+79,Writer,Scrittore,25
+80,Poet,Poeta,30
+81,Fast food worker,Addetto al fast food,15
+82,Franchise owner,Proprietario di un franchising,30
+83,Mailman,Postino,20
+84,Courier,Corriere,25
+85,Store clerk,Commesso,15
+86,Supermarket checkout person,Cassiere del supermercato,15
+87,Dock worker,Scaricatori di porto,25
+88,Unemployed person,Disoccupato,25
+89,Homeless,Senzatetto,30
+90,Social media icon,Icona dei social media,30
+91,Youtuber,Youtuber,30
+92,Streamer,Streamer,30
+93,Hypochondriac,Ipocondriaco,30
+94,Attention seeker,Cercatore di attenzioni,30
+95,Animal lover,Amante degli animali,20
+96,Hippie,Hippie,25
+97,Bus driver,Autista di autobus,25
+98,Pilot,Pilota,35
+99,Astronaut,Astronauta,60
+100,Warlord,Signore della guerra,50
+101,General,Generale,40
+102,Mma fighter,Combattente di MMA,40
+103,Boxer,Pugile,35
+104,Fencer,Schermidore,35
+105,Duelist,Duellante,40
+106,Hunter,Cacciatore,30
+107,Farmer,Agricoltore,20
+108,Cowboy,Cowboy,35
+109,Accountant,Contabile,25
+110,Banker,Banchiere,30
+111,Manager,Manager,30
+112,Mortician,Impresario di pompe funebri,35
+113,Priest,Prete,30
+114,Tv host,Conduttore televisivo,35
+115,Butler,Maggiordomo,25
+116,Maid,Cameriera,20
+117,Sports coach,Allenatore sportivo,25
+118,Teacher,Insegnante,25
+119,Student,Studente,15
+120,University student,Studente universitario,20
+121,Athlete,Atleta,30
+122,Matador,Matador,40
+123,Dog breeder,Allevatore di cani,25
+124,Typist,Dattilografo,20
+125,Secretary,Segretaria,20
+126,Telemarketer,Telemarketing,25
+127,Milkman,Lattiero,20
+128,Firefighter,Pompiere,30
+129,Emt,Tecnico delle emergenze mediche,30
+130,Baseball player,Giocatore di baseball,30
+131,Basketball player,Giocatore di basket,30
+132,Rugby player,Giocatore di rugby,30
+133,Football player,Giocatore di football americano,30
+134,Nun,Suora,25
+135,Preacher,Predicatore,30
+136,Screenwriter,Sceneggiatore,30
+137,Metalhead,Metallaro,25
+138,Guitarist,Chitarrista,25
+139,Bass player,Bassista,25
+140,Drummer,Batterista,25
+141,Father,Padre,15
+142,Mother,Madre,15
+143,Mob boss,Boss mafioso,45
+144,Gangster,Gangster,40
+145,Gangsta,Gangster,40
+146,Hitman,Sicario,45
+147,Janitor,Bidello,15
+148,Architect,Architetto,30
+149,Zoo keeper,Guardiano dello zoo,25
+150,Animal handler,Addestratore di animali,25
+151,Auctioneer,Banditore d'asta,30
+152,Bee keeper,Apicoltore,25
+153,Beautician,Estetista,20
+154,Biologist,Biologo,30
+155,Bricklayer,Muratore,20
+156,Butcher,Macellaio,20
+157,Captain,Capitano,35
+158,Cameraman,Cameraman,30
+159,Chimney sweep,Spazzacamino,25
+160,Chemist,Chimico,30
+161,Composer,Compositore,30
+162,Conductor,Direttore d'orchestra,35
+163,Dentist,Dentista,20
+164,Nutritionist,Nutrizionista,25
+165,Recruiter,Recruiter,25
+166,Housewife,Casalinga,15
+167,Stay at home dad,Papà casalingo,15
+168,Hr manager,Responsabile delle risorse umane,30
+169,Ice cream vendor,Gelataio,15
+170,Interpreter,Interprete,30
+171,Interior designer,Interior designer,30
+172,Lifeguard,Bagnino,25
+173,Masseuse,Massaggiatore,20
+174,Model,Modello,30
+175,Pharmacist,Farmacista,25
+176,Plumber,Idraulico,20
+177,Salesperson,Venditore,20
+178,Roofer,Copritetto,25
+179,Puppeteer,Burattinaio,30
+180,Motivational speaker,Motivatore,35
+181,Veterinarian,Veterinario,25
+182,Watchmaker,Orologiaio,30
+183,Train driver,Macchinista,30
+184,Taxi driver,Tassista,25
+185,Shepherd,Pastore,20
+186,Dairy farmer,Allevatore di mucche da latte,25
+187,Fisherman,Pescatore,25
+188,Hiker,Escursionista,25
+189,Animal breeder,Allevatore di animali,25
+190,Skier,Sciatore,25
+191,Snowboarder,Snowboarder,25
+192,Skateboarder,Skateboarder,20
+193,Rollerblader,Pattinatore con i rollerblade,20
+194,Hockey player,Giocatore di hockey,30
+195,Bouncer,Buttafuori,30
+196,Photographer,Fotografo,25
+197,Snooker player,Giocatore di biliardo (snooker),30
+198,Bowler,Giocatore di bowling,25
+199,Lawn bowler,Giocatore di bocce su prato,25
+200,Cricket player,Giocatore di cricket,30
+201,Rugby player,Giocatore di rugby,30
+202,Motorcycle gang member,Membro di una banda di motociclisti,40
+203,Biker chick,Motociclista (donna),35
+204,Dragon,Drago,70
+205,Navigator,Navigatore,35
+206,Spy,Spia,40
+207,Secret agent,Agente segreto,45
+208,Double agent,Agente doppio,50
+209,Inventor,Inventore,40
+210,Burglar,Ladro,35
+211,Cat burglar,Ladro acrobata,40
+212,Suicide bomber,Attentatore suicida,60
+213,Helicopter pilot,Pilota di elicottero,40
+214,Grim reaper,Tristo Mietitore,70
+215,Clown,Clown,25
+216,Juggler,Giocoliere,30
+217,Circus performer,Artista circense,30
+218,Film animal trainer,Addestratore di animali per il cinema,35
+219,Prison warden,Direttore di prigione,40
+220,Correctional officer,Agente penitenziario,35
+221,Security guard,Guardia di sicurezza,25
+222,Nudist,Nudista,20
+223,Abominable snowman,Abominevole uomo delle nevi,60
+224,Angel,Angelo,70
+225,Banshee,Banshee,65
+226,Basilisk,Basilisco,65
+227,Beast,Bestia,50
+228,Behemoth,Behemoth,70
+229,Bogey man,Uomo nero,55
+230,Brute,Bruto,40
+231,Centaur,Centauro,60
+232,Cerberus,Cerbero,75
+233,Changeling,Mutante/Sostituto,60
+234,Cherub,Cherubino,70
+235,Chimera,Chimera,70
+236,Colossus,Colosso,75
+237,Crone,Vecchia megera,50
+238,Cyclops,Ciclope,65
+239,Demon,Demone,70
+240,Devil,Diavolo,80
+241,Djinn,Genio (della lampada),65
+242,Dryad,Driade,60
+243,Elf,Elfo,55
+244,Fairy,Fata,50
+245,Fiend,Demone/Mostro,65
+246,Fire-breathing dragon,Drago sputafuoco,75
+247,Frankenstein’s monster,Mostro di Frankenstein,60
+248,Freak,Mostro/Fenomeno da baraccone,40
+249,Gargoyle,Gargoyle,55
+250,Genie,Genio,65
+251,Ghost,Fantasma,55
+252,Ghoul,Ghoul,60
+253,Giant,Gigante,60
+254,Gnome,Gnomo,50
+255,Godzilla,Godzilla,80
+256,Golum,Golem,65
+257,Gorgon,Gorgone,70
+258,Hag,Strega/Megera,55
+259,Harpy,Arpia,65
+260,Horror,Orrore,70
+261,Hydra,Idra,75
+262,Imp,Folletto/Diavoletto,60
+263,Jinn,Jinn,65
+264,Kelpie,Kelpie,65
+265,Lake spirit,Spirito del lago,60
+266,Leprechaun,Leprecauno,55
+267,Leviathan,Leviatano,75
+268,Loch ness monster,Mostro di Loch Ness,70
+269,Medusa,Medusa,70
+270,Merman,Tritone,60
+271,Mermaid,Sirena,60
+272,Monster,Mostro,50
+273,Mummy,Mummia,60
+274,Nessie,Nessie,70
+275,Nymph,Ninfa,60
+276,Ogre,Orco,50
+277,Orc,Orco,50
+278,Pegasus,Pegaso,70
+279,Phoenix,Fenice,75
+280,Polyphemus,Polifemo,65
+281,Rain bird,Uccello della pioggia,50
+282,Raven spirit,Spirito del corvo,60
+283,Ryu,Ryu (drago giapponese),70
+284,Savage,Selvaggio,40
+285,Sea monster,Mostro marino,65
+286,Shapeshifter,Mutante/Metamorfo,60
+287,Siren,Sirena,65
+288,Spirit,Spirito,55
+289,Sprite,Folletto,50
+290,Swamp monster,Mostro della palude,60
+291,Titan,Titano,75
+292,Tree nymph,Ninfa degli alberi,60
+293,Troll,Troll,50
+294,Undead,Non morto,60
+295,Unicorn,Unicorno,65
+296,Vampire,Vampiro,60
+297,Werewolf,Lupo mannaro,60
+298,Witch,Strega,50
+299,Wretch,Miserabile,35
+300,Yeti,Yeti,60
+301,Zombie,Zombie,55
+302,Treasure hunter,Cercatore di tesori,40
+303,Bodybuilder,Bodybuilder,30
+304,Gym nut,Fanatico della palestra,25
+305,Personal trainer,Personal trainer,30
+306,Gym owner,Proprietario di palestra,30
+307,Gymnast,Ginnasta,30
+308,Olympian,Atleta olimpico,40
+309,Sumo wrestler,Lottatore di sumo,35
+310,knife / fork,Coltello / forchetta, 100
+311, 2 indo amercans, 2 indo americani, 75
+312, 2 thieves, 2 ladri, 69
+313, 2 Soldiers, 2 Soldati, 69
+314, monarch / holly spirit, monaco / spirito, 85
+315, 2 witches, 2 streghe, 69
+316, wich / bird, mago / ucello, 78

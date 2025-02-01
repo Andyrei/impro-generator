@@ -1,0 +1,101 @@
+Id,eng,ita,difficulty
+1,Giving a tornado report,Dare un bollettino sul tornado,40
+2,Giving the morning traffic report,Dare il bollettino del traffico mattutino,25
+3,Hosting a talk show,Condurre un talk show,40
+4,Doing a monologue,Fare un monologo,35
+5,Doing stand up comedy,Fare stand up comedy,50
+6,Recapping a sports game,Ricapitolare una partita sportiva,30
+7,Representing themselves in court,Rappresentare se stessi in tribunale,50
+8,Trying to get out of a speeding ticket,Cercare di evitare una multa per eccesso di velocità,35
+9,Trying to haggle a price,Cercare di contrattare un prezzo,30
+10,Making a presidential election speech,Tenere un discorso per le elezioni presidenziali,60
+11,Giving a typhoon report,Dare un bollettino sul tifone,35
+12,Making a speech running for mayor,Tenere un discorso per la candidatura a sindaco,50
+13,Coming out of the closet,Fare coming out,50
+14,Admitting to using steroids in a sport,Ammettere l'uso di steroidi in uno sport,55
+15,Denying allegations of infidelity,Negare accuse di infedeltà,45
+16,Trying to sell someone something,Cercare di vendere qualcosa a qualcuno,30
+17,Trying to convert someone to their religion,Cercare di convertire qualcuno alla propria religione,40
+18,Attempting to cover up an alien encounter,Tentare di insabbiare un incontro alieno,60
+19,Admitting there are aliens,Ammettere l'esistenza degli alieni,55
+20,Giving the evening news,Dare il telegiornale serale,30
+21,Declaring war on a country,Dichiarare guerra a un paese,70
+22,Cutting a pro wrestling promo on their sworn enemy,Fare un promo di wrestling contro il proprio nemico giurato,40
+23,Answering questions at a boxing press conference,Rispondere alle domande in una conferenza stampa di boxe,35
+24,Becoming born again in some kind of religion,Rinascere in una qualche religione,45
+25,"Giving a ""I just got out of rehab"" speech","Tenere un discorso ""Sono appena uscito dalla riabilitazione""",50
+26,Doing press for their new movie,Fare promozione per il loro nuovo film,35
+27,Giving a funeral eulogy,Fare un elogio funebre,40
+28,Giving a best man speech,Fare un discorso da testimone di nozze,35
+29,Giving the morning weather report,Dare le previsioni del tempo del mattino,25
+30,Delivering some bad news,Dare brutte notizie,30
+31,Attempting to explain their symptoms to a doctor,Cercare di spiegare i propri sintomi a un medico,25
+32,Being interrogated by the cops,Essere interrogati dalla polizia,45
+33,Giving a speech before a duel,Tenere un discorso prima di un duello,50
+34,Giving a royal address of their kingdom,Tenere un discorso reale del loro regno,55
+35,Trying to motivate a lazy coworker,Cercare di motivare un collega pigro,30
+36,Trying to help a friend get over a break-up,Cercare di aiutare un amico a superare una rottura,30
+37,Trying to talk some sense into a panicked friend,Cercare di far ragionare un amico in preda al panico,35
+38,Trying to cheer somebody up,Cercare di tirare su di morale qualcuno,25
+39,Trying to train a stubborn animal,Cercare di addestrare un animale testardo,30
+40,Trying to figure out the meaning of life,Cercare di capire il significato della vita,60
+41,Telling a partner they want a divorce,Dire al partner che si vuole divorziare,45
+42,Telling a partner they want an open relationship,Dire al partner che si vuole una relazione aperta,50
+43,Going through the stages of grief (Denial Anger Bargaining Depression Acceptance), Attraversare le fasi del lutto (Negazione Rabbia Contrattazione Depressione Accettazione),60
+44,Trying to hit on the parent of a friend,Cercare di flirtare con il genitore di un amico,55
+45,Trying to get an ex back,Cercare di riconquistare un ex,40
+46,Turning down somebody's proposal,Rifiutare la proposta di qualcuno,35
+47,Turning down somebody's invitation to prom,Rifiutare l'invito di qualcuno al ballo di fine anno,30
+48,Asking somebody to prom,Chiedere a qualcuno di andare al ballo di fine anno,25
+49,Reviewing a movie,Recensire un film,25
+50,Talking about their childhood to a therapist,Parlare della propria infanzia con un terapista,35
+51,Breaking off a date,Interrompere un appuntamento,30
+52,Tearfully announcing their retirement,Annunciare con le lacrime agli occhi il loro ritiro,40
+53,Announcing they're running for president,Annunciare che si candidano per la presidenza,60
+54,Announcing they're running for mayor,Annunciare che si candidano per la carica di sindaco,50
+55,Announcing they're running for governor,Annunciare che si candidano per la carica di governatore,55
+56,Announcing they're running for senator,Annunciare che si candidano per la carica di senatore,55
+57,Announcing they're running for congress,Annunciare che si candidano per la carica di congressista,55
+58,Announcing they're running for prime minister,Annunciare che si candidano per la carica di primo ministro,60
+59,Explaining a complex scientific concept,Spiegare un concetto scientifico complesso,50
+60,Delivering a motivational speech,Tenere un discorso motivazionale,45
+61,Debating a controversial topic,Dibattere su un argomento controverso,55
+62,Pitching a startup idea,Presentare un'idea di startup,40
+63,Reading a bedtime story,Leggere una storia della buonanotte,25
+64,Describing a dream they had,Descrivere un sogno che hanno fatto,30
+65,Explaining a new technology,Spiegare una nuova tecnologia,50
+66,Talking about their favorite book,Parlare del loro libro preferito,30
+67,Describing their perfect day,Descrivere la loro giornata perfetta,25
+68,Explaining a historical event,Spiegare un evento storico,45
+69,Talking about their favorite hobby,Parlare del loro hobby preferito,30
+70,Explaining how to cook a recipe,Spiegare come cucinare una ricetta,35
+71,Describing a place they want to visit,Descrivere un luogo che vogliono visitare,30
+72,Talking about their favorite movie,Parlare del loro film preferito,25
+73,Explaining a fitness routine,Spiegare una routine di fitness,40
+74,Talking about their family,Parlare della loro famiglia,30
+75,Describing their job,Descrivere il loro lavoro,35
+76,Explaining a magic trick,Spiegare un trucco di magia,45
+77,Talking about their favorite music,Parlare della loro musica preferita,30
+78,Describing their pet,Descrivere il loro animale domestico,25
+79,Explaining a board game,Spiegare un gioco da tavolo,35
+80,Talking about their favorite sport,Parlare del loro sport preferito,30
+81,Describing a memorable vacation,Descrivere una vacanza memorabile,35
+82,Explaining a scientific experiment,Spiegare un esperimento scientifico,50
+83,Talking about their favorite food,Parlare del loro cibo preferito,25
+84,Describing a funny incident,Descrivere un incidente divertente,30
+85,Explaining a cultural tradition,Spiegare una tradizione culturale,45
+86,Talking about their favorite TV show,Parlare del loro programma TV preferito,25
+87,Describing a challenging experience,Descrivere un'esperienza impegnativa,40
+88,Explaining a financial concept,Spiegare un concetto finanziario,50
+89,Talking about their favorite holiday,Parlare della loro festa preferita,30
+90,Describing a personal achievement,Descrivere un risultato personale,35
+91,Defending a controversial opinion,Difendere un'opinione controversa,60
+92,Explaining quantum mechanics,Spiegare la meccanica quantistica,70
+93,Debating the ethics of artificial intelligence,Dibattere sull'etica dell'intelligenza artificiale,65
+94,Discussing the implications of climate change,Discutere le implicazioni del cambiamento climatico,60
+95,Explaining the theory of relativity,Spiegare la teoria della relatività,70
+96,Debating the morality of genetic engineering,Dibattere sulla moralità dell'ingegneria genetica,65
+97,Discussing the future of space exploration,Discutere il futuro dell'esplorazione spaziale,60
+98,Explaining the concept of dark matter,Spiegare il concetto di materia oscura,70
+99,Debating the impact of social media on society,Dibattere sull'impatto dei social media sulla società,60
+100,Discussing the philosophy of existentialism,Discutere la filosofia dell'esistenzialismo,65

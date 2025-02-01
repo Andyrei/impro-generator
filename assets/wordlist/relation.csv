@@ -1,0 +1,126 @@
+id,eng,ita,difficulty
+1,Parent / Child,Genitore / Figlio,10
+2,Uncle / Nibling,Zio/Zia / Nipote,15
+3,Lovers,Amanti,20
+4,Cheating,Tradimento,40
+5,Workplace Affair,Relazione sul posto di lavoro,35
+6,Brothers,Fratelli,15
+7,Sisters,Sorelle,15
+8,Brother / Sister,Fratello / Sorella,15
+9,Husband / Wife,Marito / Moglie,20
+10,Husband / Husband,Marito / Marito,25
+11,Wife / Wife,Moglie / Moglie,25
+12,Student / Teacher,Studente / Insegnante,25
+13,Hot for teacher,Infatuato/a dell'insegnante,40
+14,Scientist / Assistant,Scienziato / Assistente,25
+15,Employer / Employee,Datore di lavoro / Dipendente,20
+16,Grandfather / Grandchild,Nonno / Nipote,15
+17,Long lost siblings,Fratelli perduti da tempo,45
+18,Long lost children,Figli perduti da tempo,45
+19,Mortal Enemies,Nemici Mortali,50
+20,Friendly Rivals,Rivali Amichevoli,30
+21,Romantic Rivals,Rivali Romantici,40
+22,Sexual Tension,Tensione Sessuale,40
+23,Repulsion,Repulsione,35
+24,Attraction,Attrazione,30
+25,Admiration,Ammirazione,25
+26,Jealousy,Gelosia,35
+27,Pining,Nostalgia/Desiderio Ardente,30
+28,Unrequited Love,Amore Non Corrisposto,40
+29,Forbidden Love,Amore Proibito,50
+30,Secret Love,Amore Segreto,45
+31,Ex lovers,Ex amanti,30
+32,Just broke up,Appena lasciati,35
+33,Prisoner / Captor,Prigioniero / Carceriere,55
+34,Life Debt,Debito di Vita,50
+35,Owed money,Debito di denaro,30
+36,Trust,Fiducia,15
+37,Mistrust,Diffidenza,30
+38,Sick of each other,Stufi l'uno dell'altro,35
+39,Honeymoon phase,Fase di luna di miele,20
+40,New friends,Nuovi amici,15
+41,Teammates,Compagni di squadra,20
+42,Trainer / Athlete,Allenatore / Atleta,25
+43,Coach / Athlete,Coach / Atleta,25
+44,Doctor / Patient,Dottore / Paziente,20
+45,Doctor / Nurse,Dottore / Infermiere,25
+46,Witch / Wizard,Strega / Mago,40
+47,Pet / Owner,Animale domestico / Padrone,10
+48,Mentor,Mentore,30
+49,Fanboy,Fanboy,25
+50,Fangirl,Fangirl,25
+51,Bodyguard,Guardia del corpo,30
+52,Butler,Maggiordomo,25
+53,Maid,Cameriera,20
+54,Rapper / Producer,Rapper / Produttore,30
+55,Singer / Producer,Cantante / Produttore,30
+56,Stole money,Hanno rubato denaro,40
+57,Usurped something,Hanno usurpato qualcosa,45
+58,King / Queen,Re / Regina,40
+59,King / Princess,Re / Principessa,45
+60,King / Prince,Re / Principe,45
+61,Prince / Princess,Principe / Principessa,35
+62,Royalty / Subjects,Reale / Sudditi,35
+63,Lord / Peasant,Signore / Contadino,40
+64,Kid / Babysitter,Bambino / Babysitter,20
+65,Teenager / Authority Figure,Adolescente / Figura Autoritaria,30
+66,Prinicpal / Teacher,Preside / Insegnante,25
+67,Police / Criminal,Polizia / Criminale,40
+68,Judge / Lawyer,Giudice / Avvocato,35
+69,Lawyer / Client,Avvocato / Cliente,25
+70,Cowboy / Indian,Cowboy / Indiano,40
+71,Convict / Police,Detenuto / Polizia,40
+72,Hostage / Criminal,Ostaggio / Criminale,50
+73,High School Sweethearts,Fidanzatini del liceo,25
+74,Artist / Muse,Artista / Musa,35
+75,Band Members,Membri della band,25
+76,Former Band Members,Ex membri della band,30
+77,Bartender / Regular Customer,Barista / Cliente abituale,20
+78,Step-parent / stepchild,Matrigna/Patrigno / Figliastro/a,30
+79,Love Triangle,Triangolo amoroso,45
+80,First Engagement,Primo fidanzamento,25
+81,Priest / Sinner,Prete / Peccatore,40
+82,PC / User,PC / Utente,15
+83,Blood Cell / Bacteria,Globulo Bianco / Batterio,60
+84,Robot / It's creator,Robot / Suo creatore,50
+85,Ventriloquist / Doll,Ventriloquo / Bambola,45
+86,Angel / Devil,Angelo / Diavolo,60
+87,Conscience / Person,Coscienza / Persona,50
+88,Astronaut / Alien,Astronauta / Alieno,70
+89,Pilot / Steward/ess,Pilota / Assistente di volo,30
+90,Veterinarian / Pet owner,Veterinario / Proprietario di animale domestico,20
+91,Cosmetic Surgeon / Customer,Chirurgo estetico / Cliente,30
+92,Guru / Disciple,Guru / Discepolo,40
+93,Kung Fu Master / Monk,Maestro di Kung Fu / Monaco,40
+94,Tailor / Customer,Sarto / Cliente,20
+95,Waiter / Guest,Cameriere / Ospite,15
+96,Auto Mechanic / Car Owner,Meccanico / Proprietario di auto,20
+97,Librarian / Reader,Bibliotecario / Lettore,15
+98,Time Traveler / Historical Figure,Viaggiatore del tempo / Personaggio storico,65
+99,Ghost / Medium,Fantasma / Medium,55
+100,Sculptor / Model,Scultore / Modello,30
+101,Detective / Witness,Detective / Testimone,35
+102,Magician / Assistant,Mago / Assistente,40
+103,Queen / Jester,Regina / Giullare,45
+104,Conductor / Musician,Direttore d'orchestra / Musicista,35
+105,Photographer / Subject,Fotografo / Soggetto,25
+106,Hypnotist / Patient,Ipnotista / Paziente,50
+107,Film Director / Actor,Regista / Attore,40
+108,Mime / Street Performer,Mimo / Artista di strada,45
+109,Zookeeper / Animal,Guardiano dello zoo / Animale,35
+110,Fortune Teller / Client,Indovino / Cliente,30
+111,God / Mortal,Dio / Mortale,70
+112,Past Self / Future Self,Sé Passato / Sé Futuro,65
+113,Memory / Nightmare,Memoria / Incubo,60
+114,Life / Death,Vita / Morte,70
+115,Sun / Moon,Sole / Luna,55
+116,Hero / Inner Demon,Eroe / Demone Interiore,65
+117,Reality / Dream,Realtà / Sogno,60
+118,Light / Shadow,Luce / Ombra,55
+119,Time / Space,Tempo / Spazio,70
+120,Creator / Creation,Creatore / Creazione,65
+121,Order / Chaos,Ordine / Caos,60
+122,Truth / Lie,Verità / Bugia,55
+123,Wisdom / Ignorance,Saggezza / Ignoranza,65
+124,Nature / Technology,Natura / Tecnologia,60
+125,Mind / Body,Mente / Corpo,65
