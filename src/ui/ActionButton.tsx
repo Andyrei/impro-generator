@@ -1,6 +1,5 @@
 'use client'
-import { randomIntFromInterval } from '@/lib/general'
-import React, { use, useEffect } from 'react'
+import React from 'react'
 
 type Props = {
     action: string
@@ -10,10 +9,6 @@ type Props = {
 }
 
 export default function ActionButton({action, actionTitle, handleShowChoosenAction, btn_type_class = "classic"}: Props) {
-
-  useEffect(() => {
-
-  }, [])
 
   return (
     <>
