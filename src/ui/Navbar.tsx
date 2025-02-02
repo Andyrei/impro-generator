@@ -95,7 +95,7 @@ const Navbar = () => {
 
         // Make API request to fetch actions based on level and action type
         const response = await fetch(
-          `./api/action?&action=${theme}`,
+          `./api/v0/action?&action=${theme}`,
           {
             method: 'POST',
             headers: {

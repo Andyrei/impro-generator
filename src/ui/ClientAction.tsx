@@ -93,7 +93,7 @@ export default function ClientAction() {
         try {
             // Make API request to fetch actions based on level and action type
             const response = await fetch(
-                `./api/action?level=${level}&action=${action}`
+                `./api/v0/action?level=${level}&action=${action}`
             );
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`); // Handle HTTP errors
