@@ -1,10 +1,12 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import LevelChecker from "./LevelChecker";
 import ActionButton from "./ActionButton";
 import { randomIntFromInterval } from "@/lib/general";
 import Screen from "./Screen";
 import { ActionType } from "@/types/general";
+import { ICategory } from "@/lib/db/types/category";
+import { IWord } from "@/lib/db/types/word";
 
 /**
  * ClientAction component handles the display and selection of random actions based on user interaction.
@@ -23,17 +25,28 @@ import { ActionType } from "@/types/general";
  */
 
 export default function ClientAction() {
-    const [showDataAction, setShowDataAction] = useState<ActionType>();
+
+    const [categories, setCategories] = useState<ICategory[]>();
+    const [showDataAction, setShowDataAction] = useState<any>();
     const [lastActions, setLastActions] = useState<any>(new Set());
     const [level, setLevel] = useState("1");
 
+
+    useEffect(() => {
+        // fetch and display category actions
+        let categories = fetch(`./api/v1/categories`).then((response) => {
+            return response.json();
+        }).then((data) => {
+            setCategories(data);
+        });
+    }, []);
     /**
      * Selects a random action from the data array while avoiding recently used actions
      * @param data Array of possible actions to choose from
      * @returns A random ActionType object or undefined if data is empty
      */
     const selectRandomObject = useCallback(
-        (data: ActionType[], action: string) => {
+        (data: IWord[], action: string) => {
             // Return early if no data is available
             if (!data?.length) return undefined;
             const currentLastActions = new Set(lastActions);
@@ -60,13 +73,13 @@ export default function ClientAction() {
                         return currentLastActions;
                     }
                 } while (
-                    selectedObject.id !== undefined &&
-                    currentLastActions.has(selectedObject.id)
+                    selectedObject._id !== undefined &&
+                    currentLastActions.has(selectedObject._id)
                 );
 
                 // Add the selected action to recently used set
-                if (selectedObject.id !== undefined) {
-                    currentLastActions.add(selectedObject.id);
+                if (selectedObject._id !== undefined) {
+                    currentLastActions.add(selectedObject._id);
                 }
                 return currentLastActions;
             });
@@ -77,7 +90,7 @@ export default function ClientAction() {
             do {
                 randomIndex = randomIntFromInterval(0, data.length - 1); // Corrected range
                 selectedObject = data[randomIndex];
-            } while (currentLastActions.has(selectedObject.id));
+            } while (currentLastActions.has(selectedObject._id));
             return selectedObject;
         },
         []
@@ -93,15 +106,15 @@ export default function ClientAction() {
         try {
             // Make API request to fetch actions based on level and action type
             const response = await fetch(
-                `./api/v0/action?level=${level}&action=${action}`
+                `./api/v1/words?level=${level}&action=${action}`
             );
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`); // Handle HTTP errors
             }
             // Parse response and select a random action
             const data = await response.json();
-            const selected: ActionType | undefined = selectRandomObject(
-                data,
+            const selected: IWord | undefined = selectRandomObject(
+                data.data,
                 action
             );
             if (!selected) {
@@ -109,8 +122,20 @@ export default function ClientAction() {
                 return;
             }
 
+            // Fetch category name
+            const categoryResponse = await fetch(`./api/v1/categories`);
+            const categoriesData = await categoryResponse.json();
+            const category = categoriesData.find((cat: any) => cat._id === selected?.category);
+            const foundCategoryName = category ? category.name : '';
+
             // Update state with the selected action
-            setShowDataAction(selected);
+            setShowDataAction(
+                selected && {
+                    word: selected.word,
+                    category: foundCategoryName,
+                    difficulty: selected.difficulty,
+                }
+            );
         } catch (e) {
             console.error(e);
         }
@@ -134,26 +159,14 @@ export default function ClientAction() {
 
                 {/* buttons */}
                 <div className="grid grid-cols-4 row-auto gap-4 m-2">
-                    <ActionButton
-                        action="location"
-                        actionTitle="Luogo"
-                        handleShowChoosenAction={handleShowChoosenAction}
-                    />
-                    <ActionButton
-                        action="relation"
-                        actionTitle="Relazione"
-                        handleShowChoosenAction={handleShowChoosenAction}
-                    />
-                    <ActionButton
-                        action="topic"
-                        actionTitle="Situazione"
-                        handleShowChoosenAction={handleShowChoosenAction}
-                    />
-                    <ActionButton
-                        action="characters"
-                        actionTitle="Personaggi"
-                        handleShowChoosenAction={handleShowChoosenAction}
-                    />
+                    {categories?.map((category) => (
+                        <ActionButton
+                            key={category._id}
+                            action={category._id as string}
+                            actionTitle={category.name.it}
+                            handleShowChoosenAction={handleShowChoosenAction}
+                        />
+                    ))}
                 </div>
             </div>
         </>
