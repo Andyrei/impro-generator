@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { connectDB } from '@/lib/db/mongodb';
-import Word, { IWord } from '@/lib/db/models/word';
+import Word from '@/lib/db/models/word';
+import { IWord } from '@/lib/db/types/word';
 
 // Define the handler for the GET request
 export async function GET(req: NextRequest) {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { connectDB } from '@/lib/db/mongodb';
-import Category, { ICategory } from '@/lib/db/models/category';
+import Category from '@/lib/db/models/category';
 
 
 // Define the handler for the GET request

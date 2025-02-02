@@ -34,7 +34,7 @@ export default function ClientAction() {
 
     useEffect(() => {
         // fetch and display category actions
-        let categories = fetch(`./api/v1/categories`).then((response) => {
+        const categories = fetch(`./api/v1/categories`).then((response) => {
             return response.json();
         }).then((data) => {
             setCategories(data);
