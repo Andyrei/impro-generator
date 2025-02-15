@@ -58,7 +58,7 @@ export default function FabButton({
                 {/* Action buttons */}
                 {fabActions && fabActions.map((action, index) => (
                     <div key={index} className="flex items-center gap-3 relative">
-                        <span className="invisible absolute" aria-label={action.label} aria-hidden="true">{action.label}</span>
+                        <span className="invisible absolute" aria-label={action.label}>{action.label}</span>
                         <button
                             onClick={() => {
                                 action.onClick();

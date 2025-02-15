@@ -1,5 +1,5 @@
 import { IWord } from "@/lib/db/types/word";
-import Category from '../lib/db/models/category';
+import Category from '../../lib/db/models/category';
 import { useLocale } from "@/context/LocaleContext";
 
 type Props = {

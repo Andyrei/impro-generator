@@ -32,8 +32,10 @@ import {
     Settings,
 } from "lucide-react";
 import Link from "next/link";
-import FabButton from "./components/FabButton";
+import FabButton from "../FabButton";
 import { Slider } from "@/components/ui/slider";
+import { useLocale } from "@/context/LocaleContext";
+
 
 const Navbar = () => {
     const [open, setOpen] = useState(false);
@@ -42,6 +44,7 @@ const Navbar = () => {
     const [titleEN, setTitleEN] = useState("");
     const [difficulty, setDifficulty] = useState(0);
 
+    const { locale } = useLocale()
     const fabActions = [
         {
             icon: Image,
@@ -63,16 +66,22 @@ const Navbar = () => {
     const fabFunc = () => setOpen(true);
 
     const navigation = [
-        { icon: Home, label: "Home", href: "/", position: "left", order: 0 },
-        // { icon: Search, label: 'Search', href: '/search', position: 'left', order: 1 },
-        // { icon: User, label: 'Profile', href: '/profile', position: 'right', order: 0 },
+        { 
+            icon: Home, 
+            label: "Home", 
+            href: `/${locale}`, 
+            position: "left", 
+            order: 0 
+        },
         {
             icon: Settings,
             label: "Settings",
-            href: "/settings",
+            href: `/${locale}/settings`,
             position: "right",
             order: 1,
         },
+        // { icon: Search, label: 'Search', href: '/search', position: 'left', order: 1 },
+        // { icon: User, label: 'Profile', href: '/profile', position: 'right', order: 0 },
     ];
 
     const handleSubmit = async (e: any) => {
