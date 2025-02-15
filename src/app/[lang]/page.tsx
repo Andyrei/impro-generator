@@ -5,9 +5,9 @@ import { LocaleType } from './getDictionary';
 
 
 type Props = {
-  params: {
+  params: Promise<{
     lang: LocaleType
-  }
+  }>
 }
 
 export default async function Home({params}: Props) {

@@ -3,8 +3,8 @@ import type { NextRequest } from 'next/server'
 import { match } from '@formatjs/intl-localematcher'
 import Negotiator from 'negotiator'
 
-let defaultLocale = 'it'
-let locales = ['it', 'ro', 'en']
+const defaultLocale = 'it'
+const locales = ['it', 'ro', 'en']
 function getLocale(request: NextRequest) {
     // First check URL path for locale
     const pathname = request.nextUrl.pathname
@@ -18,8 +18,8 @@ function getLocale(request: NextRequest) {
   
     // Then check accept-language header
     const acceptedLanguage = request.headers.get('accept-language') ?? ''
-    let headers = { 'accept-language': acceptedLanguage }
-    let languages = new Negotiator({ headers }).languages()
+    const headers = { 'accept-language': acceptedLanguage }
+    const languages = new Negotiator({ headers }).languages()
   
     // Use intl-localematcher to get the best locale
     return match(languages, locales, defaultLocale)
