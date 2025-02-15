@@ -7,6 +7,7 @@ import Screen from "./Screen";
 import { ICategory } from "@/lib/db/types/category";
 import { IWord } from "@/lib/db/types/word";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLocale } from "@/context/LocaleContext";
 
 /**
  * ClientAction component handles the display and selection of random actions based on user interaction.
@@ -31,7 +32,8 @@ export default function ClientAction() {
     const [lastActions, setLastActions] = useState<any>(new Set());
     const [level, setLevel] = useState("1");
 
-
+    const { locale } = useLocale();
+    
     useEffect(() => {
         // fetch and display category actions
         const categories = fetch(`./api/v1/categories`).then((response) => {
@@ -141,6 +143,8 @@ export default function ClientAction() {
         }
     };
 
+
+    // SKELETON
     if (!categories){
        return(<>
         <div className="w-full h-72 relative flex justify-center items-center border border-green-800 rounded-md">
@@ -174,8 +178,7 @@ export default function ClientAction() {
         </div>
         </>)
     }
-
-
+    
     return (
         <>
             {/* screen */}
@@ -198,7 +201,7 @@ export default function ClientAction() {
                         <ActionButton
                             key={category._id}
                             action={category._id as string}
-                            actionTitle={category.name.it}
+                            actionTitle={category.name[locale] ? category.name[locale] : category.name.en}
                             handleShowChoosenAction={handleShowChoosenAction}
                         />
                     ))}
