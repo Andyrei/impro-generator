@@ -1,0 +1,9 @@
+{
+    "home": {
+        "screen": {
+            "default_message": "Choose what you want and play along",
+            "category": "Category",
+            "difficulty": "Difficulty"
+        }
+    }
+}

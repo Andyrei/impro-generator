@@ -1,7 +1,17 @@
-import ClientAction from '@/ui/ClientAction';
-import Navbar from '../ui/Navbar';
 
-export default function Home() {
+import ClientAction from '@/ui/ClientAction';
+import Navbar from '@/ui/Navbar';
+import { LocaleType } from './getDictionary';
+
+
+type Props = {
+  params: {
+    lang: LocaleType
+  }
+}
+
+export default async function Home({params}: Props) {
+  
   return (
     <>
     <div className="mx-auto max-w-screen-sm min-h-[100dvh] grid grid-rows-[auto_1fr_auto]">

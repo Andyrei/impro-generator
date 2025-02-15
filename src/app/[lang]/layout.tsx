@@ -2,6 +2,7 @@ import { Analytics } from "@vercel/analytics/react"
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { LocaleProvider } from '../../context/LocaleContext';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,20 +19,22 @@ export const metadata: Metadata = {
   description: "Suggestion generator tool for improv scenes",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+  params
+}: {
+  children: React.ReactNode,
+  params: { lang: 'en' | 'it' | 'ro' }
+}) {
+  const { lang } = await params;
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}
-      >
-        {children}
-
+    <html lang={lang}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}>
+        <LocaleProvider initialLocale={lang}>
+          {children}
+        </LocaleProvider>
         <Analytics />
       </body>
     </html>
-  );
+  )
 }
