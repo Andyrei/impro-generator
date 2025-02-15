@@ -4,7 +4,13 @@ import { connectDB } from '@/lib/db/mongodb';
 import Category from '@/lib/db/models/category';
 
 
-// Define the handler for the GET request
+
+
+/* 
+    Define requests of the categories that are the buttons inside the app like Place, Relation,... etc
+*/
+
+//GET  api/v1/categories
 export async function GET(req: NextRequest) {
 
     try {
