@@ -22,6 +22,7 @@ return (
 */
 
 import { getDictionary, LocaleType } from '@/app/[lang]/getDictionary'
+import { useRouter } from 'next/navigation'
 import React, { createContext, useContext, useState, useEffect } from 'react'
 
 interface LocaleContextType {
@@ -65,11 +66,13 @@ export const LocaleProvider: React.FC<LocaleProviderProps> = ({ children, initia
     const [dictionary, setDictionary] = useState<Record<string, any>>({})
     const [isLoading, setIsLoading] = useState(true)
 
+    const router = useRouter()
+
     useEffect(() => {
         const storedLocale = getStoredLocale()
         setLocale(storedLocale)
     }, [])
-    
+
 
     useEffect(() => {
         const loadDictionary = async () => {
@@ -97,6 +100,11 @@ export const LocaleProvider: React.FC<LocaleProviderProps> = ({ children, initia
     const handleSetLocale = (newLocale: LocaleType) => {
         document.cookie = `locale=${newLocale}; path=/; max-age=31536000` // 1 year
         setLocale(newLocale)
+
+        // Update the URL path
+        const currentPath = window.location.pathname
+        const newPath = currentPath.replace(/^\/[^\/]+/, `/${newLocale}`)
+        router.push(newPath)
     }
 
     return (
