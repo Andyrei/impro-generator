@@ -4,7 +4,6 @@ import LevelChecker from "./LevelChecker";
 import ActionButton from "./ActionButton";
 import { randomIntFromInterval } from "@/lib/general";
 import Screen from "./Screen";
-import { ActionType } from "@/types/general";
 import { ICategory } from "@/lib/db/types/category";
 import { IWord } from "@/lib/db/types/word";
 import { Skeleton } from "@/components/ui/skeleton";
