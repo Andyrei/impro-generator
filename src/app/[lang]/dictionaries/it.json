@@ -4,6 +4,9 @@
             "default_message": "Scegli quello che vuoi e gioca",
             "category": "Categoria",
             "difficulty": "Difficoltà"
+        },
+        "categories": {
+            "words": "Parole"
         }
     }
 }

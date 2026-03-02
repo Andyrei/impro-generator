@@ -38,7 +38,7 @@ export default function ClientAction() {
 
     useEffect(() => {
         // fetch and display category actions
-        const categories = fetch(`./api/v1/categories`).then((response) => {
+        fetch(`./api/v1/categories`).then((response) => {
             return response.json();
         }).then((data) => {
             setCategories(data);
@@ -184,7 +184,6 @@ export default function ClientAction() {
         </div>
         </>)
     }
-    
     return (
         <>
             {/* screen */}
@@ -207,7 +206,9 @@ export default function ClientAction() {
                         <ActionButton
                             key={category._id}
                             action={category._id as string}
-                            actionTitle={category.name[locale] ? category.name[locale] : category.name.en}
+                            // actionTitle={category.name[locale] ? category.name[locale] : category.name.it}
+                            actionTitle={category.name["en"]}
+                            wordCount={category.wordCount}
                             handleShowChoosenAction={handleShowChoosenAction}
                         />
                     ))}

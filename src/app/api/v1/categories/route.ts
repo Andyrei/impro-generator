@@ -17,16 +17,32 @@ export async function GET(req: NextRequest) {
         // Connect to the DB
         await connectDB();
         if (mongoose.connection.readyState !== 1) {
-        return NextResponse.json(
-            { error: 'Failed to connect to the database' },
-            { status: 500 }
-        );
+            return NextResponse.json(
+                { error: 'Failed to connect to the database' },
+                { status: 500 }
+            );
         }
-        console.log("Connected to the database!");
     
         // Get all categories
         const categories = await Category.find();
-        return NextResponse.json(categories);
+
+        const categoriesWithWordCount = await Promise.all(
+            categories.map(async (category) => {
+                const wordCount = await mongoose
+                .model('Word')
+                .countDocuments({ category: category._id });
+
+                // turn mongoose document → plain object so we can mutate it
+                const obj = category.toObject();
+
+                // assign name as-is since it's already a plain object
+                obj.name = category.name;   // { it: '…', en: '…' }
+
+                return { ...obj, wordCount };
+            })
+        );
+        
+        return NextResponse.json(categoriesWithWordCount);
     } catch (error) {
         console.error("Error fetching categories:", error);
         return NextResponse.json(

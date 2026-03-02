@@ -4,6 +4,9 @@
             "default_message": "Alege ce vrei si dai bataie",
             "category": "Categoria",
             "difficulty": "Dificultate"
+        },
+        "categories": {
+            "words": "Cuvinte"
         }
     }
 }
