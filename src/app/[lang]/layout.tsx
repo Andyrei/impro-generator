@@ -1,7 +1,7 @@
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import "@/app/globals.css";
 import { LocaleProvider } from "../../context/LocaleContext";
 import Navbar from "@/components/custom-ui/Navbar";
 
