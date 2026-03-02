@@ -16,6 +16,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectGroup
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,9 +37,10 @@ import FabButton from "../FabButton";
 import { Slider } from "@/components/ui/slider";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from '@/context/ThemeContext';
+import { ICategory } from "@/lib/db/types/category";
 
 
-const Navbar = () => {
+const Navbar = ({ categories }: { categories: ICategory[] }) => {
     const { isLoading } = useTheme();
     const [open, setOpen] = useState(false);
     const [theme, setTheme] = useState("location");
@@ -168,20 +170,30 @@ const Navbar = () => {
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="name" className="text-right">
-                              Tema
-                          </Label>
-                          <Select required value={theme} onValueChange={(val) => setTheme(val)}>
-                            <SelectTrigger className="col-span-3">
-                              <SelectValue placeholder="Theme" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="location">Luogo</SelectItem>
-                              <SelectItem value="characters">Personaggi</SelectItem>
-                              <SelectItem value="relation">Relazione</SelectItem>
-                              <SelectItem value="topic">Situazione</SelectItem>
-                            </SelectContent>
-                          </Select>
+                            <Label htmlFor="name" className="text-right">
+                                Action
+                            </Label>
+                            <Select required value={theme} onValueChange={(val) => setTheme(val)}>
+                                <SelectTrigger className="col-span-3 w-full max-w-48">
+                                    <SelectValue placeholder="Select an action" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                    {categories.map((category) => (
+                                        <SelectItem 
+                                            key={category._id} 
+                                            value={
+                                                category.name[locale] || 
+                                                category.name.it || 
+                                                category.name.en || 
+                                                'Unknown'
+                                            }>
+                                            {category.name[locale] || category.name.it || category.name.en || 'Unknown'}
+                                        </SelectItem>
+                                    ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="titleIT" className="text-right">
