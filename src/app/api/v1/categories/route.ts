@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { connectDB } from '@/lib/db/mongodb';
 import Category from '@/lib/db/models/category';
+import Word from '@/lib/db/models/word';
 
 
 
@@ -28,9 +29,7 @@ export async function GET(req: NextRequest) {
 
         const categoriesWithWordCount = await Promise.all(
             categories.map(async (category) => {
-                const wordCount = await mongoose
-                .model('Word')
-                .countDocuments({ category: category._id });
+                const wordCount = await Word.countDocuments({ category: category._id })
 
                 // turn mongoose document → plain object so we can mutate it
                 const obj = category.toObject();
