@@ -1,5 +1,3 @@
-import { IWord } from "@/lib/db/types/word";
-import Category from '../../lib/db/models/category';
 import { useLocale } from "@/context/LocaleContext";
 import { use, useEffect, useState } from "react";
 
@@ -15,8 +13,6 @@ export default function Screen({showDataAction}: Props) {
     const [isLoading, setIsLoading] = useState(false);
     
     useEffect(() => {
-        console.log(isLoading);
-        
         if (showDataAction?.loadAction !== undefined) setIsLoading(showDataAction.loadAction);
     }, [showDataAction]);
     return <div className="w-full h-72 flex justify-center items-center radial-gradient">
