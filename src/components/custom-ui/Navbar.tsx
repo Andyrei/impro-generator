@@ -35,9 +35,11 @@ import Link from "next/link";
 import FabButton from "../FabButton";
 import { Slider } from "@/components/ui/slider";
 import { useLocale } from "@/context/LocaleContext";
+import { useTheme } from '@/context/ThemeContext';
 
 
 const Navbar = () => {
+    const { isLoading } = useTheme();
     const [open, setOpen] = useState(false);
     const [theme, setTheme] = useState("location");
     const [titleIT, setTitleIT] = useState("");
@@ -86,15 +88,6 @@ const Navbar = () => {
 
     const handleSubmit = async (e: any) => {
         e.preventDefault();
-
-        console.log("Form submitted");
-        
-        console.log("Form submitted");
-        console.log("Theme: ", theme);
-        console.log("Title IT: ", titleIT);
-        console.log("Title EN: ", titleEN);
-        console.log("Difficulty: ", difficulty);
-
         const data = {
           theme,
           titleIT,
@@ -122,9 +115,13 @@ const Navbar = () => {
         }
     };
 
+
+
+
+
     return (
         <>
-            <div className="">
+            <div className={`${isLoading && 'hidden'}`}>
                 {/* Main navigation bar */}
                 <nav className="bg-slate-800 border-t h-16 flex items-center justify-around px-4 relative">
                     <div className="flex w-1/2 justify-around">
