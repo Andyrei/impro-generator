@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/[lang]/globals.css";
 import { LocaleProvider } from "../../context/LocaleContext";
-import Navbar from "@/components/custom-ui/Navbar";
 import ClientThemeProvider from "@/context/ThemeContext";
 
 const geistSans = Geist({
@@ -44,10 +43,7 @@ export default async function RootLayout({
                                     !!!! VERSIONE ALPHA - V0.0.4 ANCORA IN SVILUPPO!!!!
                                 </div>
                             </header>
-                            <main className="p-5">
-                                {children}
-                            </main>
-                            <Navbar />
+                            {children}
                         </div>
                     </ClientThemeProvider>
                 </LocaleProvider>

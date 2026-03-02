@@ -26,25 +26,15 @@ import { useTheme } from '@/context/ThemeContext';
  *
  */
 
-export default function ClientAction() {
-
-    const [categories, setCategories] = useState<ICategory[]>();
+export default function ClientAction({categories}: {categories: ICategory[]}) {
     const [showDataAction, setShowDataAction] = useState<any>();
     const [lastActions, setLastActions] = useState<any>(new Set());
     const [level, setLevel] = useState("1");
     const { locale } = useLocale();
-    const { isLoading, setIsLoading } = useTheme();
+    // const { isLoading, setIsLoading } = useTheme();
     const [loadAction, setLoadAction] = useState(false);
 
-    useEffect(() => {
-        // fetch and display category actions
-        fetch(`./api/v1/categories`).then((response) => {
-            return response.json();
-        }).then((data) => {
-            setCategories(data);
-            setIsLoading(false);
-        });
-    }, []);
+    
 
 
     /**
@@ -132,9 +122,7 @@ export default function ClientAction() {
             }
 
             // Fetch category name
-            const categoryResponse = await fetch(`./api/v1/categories`);
-            const categoriesData = await categoryResponse.json();
-            const category = categoriesData.find((cat: any) => cat._id === selected?.category);
+            const category = categories.find((cat: any) => cat._id === selected?.category);
             const foundCategoryName = category ? category.name : '';
 
             // Update state with the selected action
@@ -207,7 +195,7 @@ export default function ClientAction() {
                             key={category._id}
                             action={category._id as string}
                             // actionTitle={category.name[locale] ? category.name[locale] : category.name.it}
-                            actionTitle={category.name["en"]}
+                            actionTitle={category.name[locale] || category.name.it || category.name.en || 'Unknown'}
                             wordCount={category.wordCount}
                             handleShowChoosenAction={handleShowChoosenAction}
                         />
