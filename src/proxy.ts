@@ -5,25 +5,32 @@ import Negotiator from 'negotiator'
 
 const defaultLocale = 'it'
 const locales = ['it', 'ro', 'en']
+
 function getLocale(request: NextRequest) {
-    // First check URL path for locale
+    // 1. Check URL (Already doing this)
     const pathname = request.nextUrl.pathname
     const pathnameLocale = locales.find(
       locale => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
     )
-    
-    if (pathnameLocale) {
-      return pathnameLocale
+    if (pathnameLocale) return pathnameLocale
+
+    // 2. Check Cookie (Users who have visited before)
+    const cookieLocale = request.cookies.get('locale')?.value
+    if (cookieLocale && locales.includes(cookieLocale)) return cookieLocale
+
+    // 3. Check Browser Headers
+    const acceptedLanguage = request.headers.get('accept-language')
+    if (acceptedLanguage) {
+        const languages = new Negotiator({ headers: { 'accept-language': acceptedLanguage } }).languages()
+        try {
+            return match(languages, locales, defaultLocale)
+        } catch (e) {
+            return defaultLocale
+        }
     }
   
-    // Then check accept-language header
-    const acceptedLanguage = request.headers.get('accept-language') ?? ''
-    const headers = { 'accept-language': acceptedLanguage }
-    const languages = new Negotiator({ headers }).languages()
-  
-    // Use intl-localematcher to get the best locale
-    return match(languages, locales, defaultLocale)
-  }
+    return defaultLocale
+}
 
 export function proxy(request: NextRequest) {
     const { pathname, search } = request.nextUrl
@@ -57,7 +64,6 @@ export function proxy(request: NextRequest) {
 export const config = {
     matcher: [
         // Match root and all non-asset paths
-        '/',
-        '/((?!api|_next|.*\\.[^/]*$).*)'
+        '/((?!api|_next/static|_next/image|favicon.ico).*)',
     ]
 }

@@ -13,10 +13,10 @@ type Props = {
 
 export default async function Home({params}: Props) {
   const { lang } = await params;
+  
   // fetch and display category actions
-  const base = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-
-  const categoriesResponse = await fetch(`${base}/api/v1/categories`);
+  const base = process.env.NEXT_PUBLIC_BASE_URL 
+             || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
   const categoriesData: ICategory[] = await categoriesResponse.json();
 
   return <>
