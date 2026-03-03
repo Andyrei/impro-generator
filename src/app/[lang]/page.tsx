@@ -17,6 +17,7 @@ export default async function Home({params}: Props) {
   // fetch and display category actions
   const base = process.env.NEXT_PUBLIC_BASE_URL 
              || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+  const categoriesResponse = await fetch(`${base}/api/v1/categories`);
   const categoriesData: ICategory[] = await categoriesResponse.json();
 
   return <>
