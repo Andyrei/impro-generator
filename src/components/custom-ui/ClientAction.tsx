@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import LevelChecker from "./LevelChecker";
 import ActionButton from "./ActionButton";
 import { randomIntFromInterval } from "@/lib/general";
@@ -9,6 +9,34 @@ import { IWord } from "@/lib/db/types/word";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from '@/context/ThemeContext';
+import {
+    Image,
+    Pencil,
+    Camera,
+} from "lucide-react";
+import FabButton from "../FabButton";
+import { toast } from "sonner";
+
+import { Button } from "@/components/ui/button";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  SelectGroup
+} from "@/components/ui/select"
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "../ui/slider";
 
 /**
  * ClientAction component handles the display and selection of random actions based on user interaction.
@@ -31,11 +59,59 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
     const [lastActions, setLastActions] = useState<any>(new Set());
     const [level, setLevel] = useState("1");
     const { locale } = useLocale();
-    // const { isLoading, setIsLoading } = useTheme();
+    const { isLoading, setIsLoading } = useTheme();
     const [loadAction, setLoadAction] = useState(false);
+    const [fabOpenDialog, setFabOpenDialog] = useState(false);
+    const [suggestionCreation, setSuggestionCreation] = useState({
+        "category": "location",
+        "title": {
+            "it": "",
+            "en": ""
+        },
+        "difficulty": 0
+    })
 
     
+    const fabActions = [
+        {
+            icon: Image,
+            label: "Relay",
+            onClick: () => console.log("Relay clicked"),
+        },
+        {
+            icon: Camera,
+            label: "Camera",
+            onClick: () => console.log("Camera clicked"),
+        },
+        {
+            icon: Pencil,
+            label: "Write",
+            onClick: () => console.log("Write clicked"),
+        },
+    ];
 
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();
+
+        // Make API request to fetch actions based on level and action type
+        const response = await fetch(
+          `./api/v0/action?&action=${suggestionCreation.category}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(suggestionCreation),
+          }
+        );
+
+        if (response.ok) {
+          const json = await response.json();
+          console.log(json);
+        } else {
+          console.error('Failed to fetch data');
+        }
+    };
 
     /**
      * Selects a random action from the data array while avoiding recently used actions
@@ -202,6 +278,116 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
                     ))}
                 </div>
             </div>
+
+            <FabButton
+                fabActions={fabActions} 
+                onFabClick={
+                    ()=>toast.warning("La feature non é ancora disponibile", {
+                        description: "Questa feature permetterà di inserire nuovi sugerimenti",
+                        position: "top-center",
+                        duration: 5000
+                    })
+                } 
+            />
+            {/* <Dialog open={fabOpenDialog} onOpenChange={setFabOpenDialog}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Aggiungi nuovo suggerimento</DialogTitle>
+                        <DialogDescription>
+                            Inserisci un nuovo suggerimento per il gioco
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="name" className="text-right">
+                                Action
+                            </Label>
+                            <Select required value={suggestionCreation.category} onValueChange={(val) => setSuggestionCreation(prev => ({
+                                ...prev,
+                                category: val
+                            }))}>
+                                <SelectTrigger className="col-span-3 w-full max-w-48">
+                                    <SelectValue placeholder="Select an action" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                    {categories.map((category) => (
+                                        <SelectItem 
+                                            key={category._id} 
+                                            value={
+                                                category.name[locale] || 
+                                                category.name.it || 
+                                                category.name.en || 
+                                                'Unknown'
+                                            }>
+                                            {category.name[locale] || category.name.it || category.name.en || 'Unknown'}
+                                        </SelectItem>
+                                    ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="titleIT" className="text-right">
+                                Titolo [IT]
+                            </Label>
+                            <Input
+                                id="titleIT"
+                                required
+                                placeholder="Inserisci il titolo"
+                                className="col-span-3"
+                                value={suggestionCreation?.title?.it ?? ''}
+                                onChange={e => setSuggestionCreation(prev => ({
+                                    ...prev,
+                                    title: {
+                                        ...prev.title,
+                                        it: e.target.value
+                                    }
+                                }))}
+                            />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="titleEN" className="text-right">
+                              Titolo [EN]
+                            </Label>
+                            <Input
+                                id="titleEN"
+                                placeholder="Insert title"
+                                value={suggestionCreation?.title?.en ?? ''}
+                                onChange={e => setSuggestionCreation(prev => ({
+                                    ...prev,
+                                    title: {
+                                        ...prev.title,
+                                        en: e.target.value
+                                    }
+                                }))}
+                                className="col-span-3"
+                            />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="difficulty" className="text-right">
+                              Difficoltà {suggestionCreation?.difficulty}
+                            </Label>
+                            <Slider
+                              id="difficulty"
+                              className="col-span-3"
+                              onValueChange={val => setSuggestionCreation(prev => ({
+                                ...prev,
+                                difficulty: val[0]
+                              }))}
+                              value={[suggestionCreation.difficulty]}
+                              defaultValue={[33]}
+                              min={1}
+                              max={100}
+                              step={1} 
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button type="submit" onClick={handleSubmit}>Save changes</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog> */}
         </>
     );
 }

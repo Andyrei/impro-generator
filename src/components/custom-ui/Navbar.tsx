@@ -20,54 +20,26 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import fs from 'fs';
-import path from 'path';
 import {
     Home,
     Search,
     Bell,
     User,
     Image,
-    Pencil,
-    Camera,
     Settings,
 } from "lucide-react";
 import Link from "next/link";
-import FabButton from "../FabButton";
-import { Slider } from "@/components/ui/slider";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from '@/context/ThemeContext';
-import { ICategory } from "@/lib/db/types/category";
 
 
-const Navbar = ({ categories }: { categories: ICategory[] }) => {
+const Navbar = () => {
     const { isLoading } = useTheme();
-    const [open, setOpen] = useState(false);
-    const [theme, setTheme] = useState("location");
-    const [titleIT, setTitleIT] = useState("");
-    const [titleEN, setTitleEN] = useState("");
-    const [difficulty, setDifficulty] = useState(0);
 
     const { locale } = useLocale()
-    const fabActions = [
-        {
-            icon: Image,
-            label: "Relay",
-            onClick: () => console.log("Relay clicked"),
-        },
-        {
-            icon: Camera,
-            label: "Camera",
-            onClick: () => console.log("Camera clicked"),
-        },
-        {
-            icon: Pencil,
-            label: "Write",
-            onClick: () => console.log("Write clicked"),
-        },
-    ];
 
-    const fabFunc = () => setOpen(true);
+    // const fabFunc = () => setOpen(!open);
+    
 
     const navigation = [
         { 
@@ -88,44 +60,11 @@ const Navbar = ({ categories }: { categories: ICategory[] }) => {
         // { icon: User, label: 'Profile', href: '/profile', position: 'right', order: 0 },
     ];
 
-    const handleSubmit = async (e: any) => {
-        e.preventDefault();
-        const data = {
-          theme,
-          titleIT,
-          titleEN,
-          difficulty,
-        };
-
-        // Make API request to fetch actions based on level and action type
-        const response = await fetch(
-          `./api/v0/action?&action=${theme}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-          }
-        );
-
-        if (response.ok) {
-          const json = await response.json();
-          console.log(json);
-        } else {
-          console.error('Failed to fetch data');
-        }
-    };
-
-
-
-
-
     return (
         <>
-            <div className={`${isLoading && 'hidden'}`}>
+            <div>
                 {/* Main navigation bar */}
-                <nav className="bg-slate-800 border-t h-16 flex items-center justify-around px-4 relative">
+                <nav className="bg-black border-t border-green-900 h-16 flex items-center justify-around px-4 relative">
                     <div className="flex w-1/2 justify-around">
                         {navigation
                             .filter((item) => item.position === "left")
@@ -133,9 +72,10 @@ const Navbar = ({ categories }: { categories: ICategory[] }) => {
                             .map((item, index) => (
                                 <Link
                                     key={index}
-                                    className="p-2 text-white hover:text-green-600 transition-colors"
+                                    className="flex flex-col items-center gap-1 p-2 hover:text-green-400 text-green-600 transition-colors"
                                     href={item.href}>
-                                    <item.icon size={24} />
+                                    <item.icon size={22} strokeWidth={1.5} />
+                                    <span className="font-mono text-[9px] uppercase tracking-widest">{item.label}</span>
                                 </Link>
                             ))}
                     </div>
@@ -149,96 +89,15 @@ const Navbar = ({ categories }: { categories: ICategory[] }) => {
                             .map((item, index) => (
                                 <Link
                                     key={index}
-                                    className="p-2 text-white hover:text-blue-500 transition-colors"
+                                    className="flex flex-col items-center gap-1 p-2 hover:text-green-400 text-green-600 transition-colors"
                                     href={item.href}>
-                                    <item.icon size={24} />
+                                    <item.icon size={22} strokeWidth={1.5} />
+                                    <span className="font-mono text-[9px] uppercase tracking-widest">{item.label}</span>
                                 </Link>
                             ))}
                     </div>
-
-                    <FabButton fabActions={fabActions} onFabClick={fabFunc} />
                 </nav>
             </div>
-
-            <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Aggiungi nuovo suggerimento</DialogTitle>
-                        <DialogDescription>
-                            Inserisci un nuovo suggerimento per il gioco
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="name" className="text-right">
-                                Action
-                            </Label>
-                            <Select required value={theme} onValueChange={(val) => setTheme(val)}>
-                                <SelectTrigger className="col-span-3 w-full max-w-48">
-                                    <SelectValue placeholder="Select an action" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                    {categories.map((category) => (
-                                        <SelectItem 
-                                            key={category._id} 
-                                            value={
-                                                category.name[locale] || 
-                                                category.name.it || 
-                                                category.name.en || 
-                                                'Unknown'
-                                            }>
-                                            {category.name[locale] || category.name.it || category.name.en || 'Unknown'}
-                                        </SelectItem>
-                                    ))}
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="titleIT" className="text-right">
-                                Titolo [IT]
-                            </Label>
-                            <Input
-                                id="titleIT"
-                                required
-                                placeholder="Inserisci il titolo"
-                                className="col-span-3"
-                                onChange={(e) => setTitleIT(e.target.value)}
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="titleEN" className="text-right">
-                              Titolo [EN]
-                            </Label>
-                            <Input
-                                id="titleEN"
-                                placeholder="Insert title"
-                                onChange={(e) => setTitleEN(e.target.value)}
-                                className="col-span-3"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="difficulty" className="text-right">
-                              Difficoltà {difficulty}
-                            </Label>
-                            <Slider 
-                              id="difficulty"
-                              className="col-span-3"
-                              onValueChange={(val)=>setDifficulty(val[0])}
-                              value={[difficulty]}
-                              defaultValue={[33]}
-                              min={1}
-                              max={100}
-                              step={1} 
-                            />
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button type="submit" onClick={handleSubmit}>Save changes</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </>
     );
 };
