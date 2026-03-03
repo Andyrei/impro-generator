@@ -34,6 +34,15 @@ function getLocale(request: NextRequest) {
 
 export function proxy(request: NextRequest) {
     const { pathname, search } = request.nextUrl
+    // Ignore files with extensions (e.g., .png, .jpg) or specific metadata routes
+    if (
+        pathname.includes('.') || 
+        pathname.endsWith('/opengraph-image') || 
+        pathname.endsWith('/twitter-image')
+    ) {
+        return NextResponse.next()
+    }
+
     const locale = getLocale(request)
 
     // Handle root path
@@ -67,6 +76,6 @@ export function proxy(request: NextRequest) {
 export const config = {
     matcher: [
         // Match root and all non-asset paths
-        '/((?!api|_next/static|_next/image|favicon.ico).*)',
+        '/((?!api|_next/static|_next/image|favicon.ico|og-image|twitter-image|sitemap.xml|robots.txt).*)',
     ]
 }

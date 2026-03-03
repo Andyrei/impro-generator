@@ -28,6 +28,10 @@ const dictionaries = languages.reduce((acc, lang) => {
 
 // Returns the dictionary corresponding to the locale
 export const getDictionary = async (locale: LocaleType) => {
-    const dictionary = await dictionaries[locale]();
-    return dictionary;
+
+    const loader = dictionaries[locale];
+    if (!loader) {
+        return dictionaries['it'](); // Fallback to English
+    }
+    return await loader();
 }

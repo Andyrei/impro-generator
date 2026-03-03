@@ -19,8 +19,24 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
     title: "IMPRO GENERATOR",
-    description: "Suggestion generator tool for improv scenes",
-};
+    description: "Generatore di divertimento",
+    metadataBase: new URL('https://impro-generator.vercel.app'),
+    openGraph: {
+        title: 'IMPRO GENERATOR',
+        description: 'Generatore di divertimento',
+        url: 'https://impro-generator.vercel.app',
+        siteName: 'Ti faccio un casino!',
+        images: [
+        {
+            url: '/og-image.png',
+            width: 1200,
+            height: 630,
+        },
+        ],
+        locale: 'it_IT',
+        type: 'website',
+    },
+}
 
 export default async function RootLayout({
     children,
@@ -32,6 +48,10 @@ export default async function RootLayout({
     const { lang } = await params;
     return (
         <html lang={lang}>
+            <head>
+                <meta charSet="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
+            </head>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}>
                 <LocaleProvider initialLocale={lang}>
