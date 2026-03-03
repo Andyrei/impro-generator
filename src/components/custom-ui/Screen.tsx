@@ -28,9 +28,7 @@ export default function Screen({ showDataAction }: Props) {
 
   /* safely read the default message – if the dictionary isn’t ready
      fall back to a hard‑coded string (or whatever makes sense for you) */
-  const defaultMessage =
-    intl?.home?.screen?.default_message ??
-    'Choose what you want and play along';
+  const defaultMessage = intl?.home?.screen?.default_message ?? 'Scegli quello che vuoi e improvvisa';
 
   return (
     <div className="w-full h-72 flex justify-center items-center radial-gradient">
@@ -53,7 +51,7 @@ export default function Screen({ showDataAction }: Props) {
 
           {showDataAction?.category && (
             <div className="absolute top-5 text-base left-5">
-              <span>{intl?.home?.screen?.category ?? 'Category'}: </span>
+              <span>{intl?.home?.screen?.category ?? 'Categoria'}: </span>
               <span>
                 {showDataAction.category[locale] ||
                   showDataAction.category.en}
@@ -62,7 +60,7 @@ export default function Screen({ showDataAction }: Props) {
           )}
           {showDataAction?.difficulty && (
             <div className="absolute bottom-5 text-base left-5">
-              <span>{intl?.home?.screen?.difficulty ?? 'Difficulty'}: </span>
+              <span>{intl?.home?.screen?.difficulty ?? 'Difficoltà'}: </span>
               <span>{showDataAction.difficulty}</span>
             </div>
           )}

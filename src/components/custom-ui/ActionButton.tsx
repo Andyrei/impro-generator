@@ -22,7 +22,7 @@ export default function ActionButton({action, actionTitle, wordCount, handleShow
         <div className="wear-overlay"></div>
         {wordCount !== undefined && (
           <div className="absolute bottom-2 right-2 text-xs text-green-200 bg-black bg-opacity-50 px-1 rounded">
-          {intl?.home?.categories.words}: {wordCount}
+          {intl?.home?.categories.words ?? "PAROLE"}: {wordCount}
           </div>
         )}
       </button>
