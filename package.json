@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "______ DATABASE _____": "// Seed the DB using ts-node",
     "seed": "tsx src/lib/db/seed/seed.ts",
+    "seed:csv": "tsx src/lib/db/seed/seedFromCsv.ts",
     "______ BUILD _____": "",
     "build": "next build",
     "start": "next start"
@@ -28,6 +29,7 @@
     "@vercel/analytics": "^1.4.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "csv-parse": "^6.1.0",
     "embla-carousel-react": "^8.5.2",
     "lucide-react": "^0.471.0",
     "mongoose": "^8.9.6",
@@ -43,7 +45,7 @@
   },
   "devDependencies": {
     "@types/negotiator": "^0.6.3",
-    "@types/node": "^20",
+    "@types/node": "^20.19.35",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "csv-parser": "^3.1.0",
@@ -52,7 +54,7 @@
     "eslint-config-next": "16.1.6",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
-    "tsx": "^4.19.2",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   },
   "overrides": {
