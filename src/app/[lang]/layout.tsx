@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/[lang]/globals.css";
 import { LocaleProvider } from "../../context/LocaleContext";
 import ClientThemeProvider from "@/context/ThemeContext";
+import { Toaster } from "@/components/ui/sonner";
+import Navbar from "@/components/custom-ui/Navbar";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -43,11 +45,15 @@ export default async function RootLayout({
                                     !!!! VERSIONE ALPHA - V0.0.4 ANCORA IN SVILUPPO!!!!
                                 </div>
                             </header>
-                            {children}
+                            <main>
+                                {children}
+                            </main>
+                            <Navbar />
                         </div>
                     </ClientThemeProvider>
                 </LocaleProvider>
                 <Analytics />
+                <Toaster />
             </body>
         </html>
     );
