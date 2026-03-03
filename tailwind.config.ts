@@ -7,6 +7,9 @@ export default {
   ],
   theme: {
   	extend: {
+		fontFamily: {
+        	mono: ['Geist Mono', 'ui-monospace', 'monospace']
+    	},
 		animation: {
 			marquee: 'marquee 7s linear infinite',
 			marquee2: 'marquee2 7s linear infinite'
@@ -61,7 +64,15 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+			crt: {
+				bg:         '#000000',
+				screen:     '#0a1f0a',       // the dark green screen background
+				glow:       '#4ade80',       // green-400, the bright glow color
+				dim:        '#166534',       // green-800, dimmed elements
+				border:     '#14532d',       // green-900, borders
+				text:       '#86efac',       // green-300, readable text
+			}
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
