@@ -9,12 +9,42 @@ interface FabAction {
   onClick: () => void;
 }
 
+type FabPosition = 
+    | 'bottom-center' 
+    | 'bottom-right' 
+    | 'bottom-left'
+    | 'top-center'
+    | 'top-right'
+    | 'top-left';
+
 interface FabButtonProps {
+  className?: string;
+  position?: FabPosition;
   fabActions?: FabAction[];
   onFabClick?: () => void;
 }
 
+const positionClasses: Record<FabPosition, string> = {
+    'bottom-center': 'bottom-6 left-1/2 -translate-x-1/2',
+    'bottom-right':  'bottom-6 right-6',
+    'bottom-left':   'bottom-6 left-6',
+    'top-center':    'top-6 left-1/2 -translate-x-1/2',
+    'top-right':     'top-6 right-6',
+    'top-left':      'top-6 left-6',
+};
+
+const dropdownPositionClasses: Record<FabPosition, string> = {
+    'bottom-center': 'bottom-24 left-1/2 -translate-x-1/2',
+    'bottom-right':  'bottom-24 right-6',
+    'bottom-left':   'bottom-24 left-6',
+    'top-center':    'top-24 left-1/2 -translate-x-1/2',
+    'top-right':     'top-24 right-6',
+    'top-left':      'top-24 left-6',
+};
+
 export default function FabButton({ 
+  className,
+  position = 'bottom-center',
   fabActions,
   onFabClick
 }: FabButtonProps) {
@@ -49,8 +79,8 @@ export default function FabButton({
 
         <div
             ref={dropdownRef}
-            className={`absolute bottom-24 left-1/2 -translate-x-1/2 transition-all duration-300 ease-in-out
-          ${isDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}
+            className={`fixed ${dropdownPositionClasses[position]} transition-all duration-300 ease-in-out z-50
+            ${isDropdownOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}
         `}
         >
             <div className="flex flex-col-reverse gap-3 items-center">
@@ -75,9 +105,12 @@ export default function FabButton({
         <button
             ref={fabRef}
             onClick={handleFabClick}
-            className={`absolute -top-6 left-1/2 -translate-x-1/2 w-14 h-14 rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-300
-       ${isDropdownOpen ? 'bg-blue-600 rotate-45' : 'bg-blue-500 hover:bg-blue-600'}
-     `}
+            className={`fixed ${positionClasses[position]} z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg shadow-green-900/60 transition-all duration-300
+                ${isDropdownOpen 
+                    ? 'bg-green-600 rotate-45 text-black' 
+                    : 'bg-green-600 hover:bg-green-400 text-black'
+                }
+            `}
         >
             <Plus size={24} />
         </button>
