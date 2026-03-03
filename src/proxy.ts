@@ -35,15 +35,12 @@ function getLocale(request: NextRequest) {
 export function proxy(request: NextRequest) {
     const { pathname, search } = request.nextUrl
     const locale = getLocale(request)
-    
-    const response = NextResponse.next()
-
-    // Store locale in cookies for the client-side
-    response.cookies.set('locale', locale)
 
     // Handle root path
     if (pathname === '/') {
-        return NextResponse.redirect(new URL(`/${locale}`, request.url))
+        const response = NextResponse.redirect(new URL(`/${locale}`, request.url));
+        response.cookies.set('locale', locale); // set on the redirect too
+        return response;
     }
 
     // Check for missing locale
@@ -55,10 +52,16 @@ export function proxy(request: NextRequest) {
         const newPath = pathname.startsWith('/') 
             ? `/${locale}${pathname}`
             : `/${locale}/${pathname}`
-        return NextResponse.redirect(new URL(newPath + search, request.url))
+         const response = NextResponse.redirect(new URL(newPath + search, request.url));
+        response.cookies.set('locale', locale); // set on the redirect too
+        return response;
     }
 
-    return NextResponse.next()
+    const response = NextResponse.next()
+
+    // Store locale in cookies for the client-side
+    response.cookies.set('locale', locale);
+    return response
 }
 
 export const config = {
