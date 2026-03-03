@@ -1,7 +1,7 @@
 
 import ClientAction from '@/components/custom-ui/ClientAction';
 import { LocaleType } from './getDictionary';
-import { getCategories } from '@/lib/db/seed/queries/getCategories';
+import { getCategories } from '@/lib/db/queries/getCategories';
 
 
 type Props = {
