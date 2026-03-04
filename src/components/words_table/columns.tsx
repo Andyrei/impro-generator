@@ -13,19 +13,19 @@ const difficultyLabel = (d: number) => {
 }
 
 export const wordColumns = (locale: string): ColumnDef<IWord>[] => [
-  {
-    id: "index",
-    header: () => <p className="text-muted-foreground">#</p>,
-    cell: ({ row, table }) => {
-      const pageIndex = table.getState().pagination.pageIndex
-      const pageSize = table.getState().pagination.pageSize
-      return (
-        <span className="text-muted-foreground text-xs">
-          {pageIndex * pageSize + row.index + 1}
-        </span>
-      )
-    },
-  },
+  // {
+  //   id: "index",
+  //   header: () => <p className="text-muted-foreground">#</p>,
+  //   cell: ({ row, table }) => {
+  //     const pageIndex = table.getState().pagination.pageIndex
+  //     const pageSize = table.getState().pagination.pageSize
+  //     return (
+  //       <span className="text-muted-foreground text-xs">
+  //         {pageIndex * pageSize + row.index + 1}
+  //       </span>
+  //     )
+  //   },
+  // },
   {
     accessorFn: (row) => row.word[locale] ?? row.word.it ?? row.word.en,
     id: "word",

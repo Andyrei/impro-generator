@@ -54,12 +54,12 @@ export default function ActionButton({
 
   return (
     <>
-      <button className={`col-span-2 row-span-2 py-10 nokia-btn ${btn_type_class}`} {...handlers}>
-        <p className='btn-text glitch' data-title={actionTitle}>{actionTitle}</p>
+      <button className={`col-span-2 row-span-2 py-6 md:py-10 nokia-btn ${btn_type_class}`} {...handlers}>
+        <p className='text-sm md:text-xl btn-text glitch' data-title={actionTitle}>{actionTitle}</p>
         <div className="wear-overlay"></div>
         {wordCount !== undefined && (
-          <div className="absolute bottom-2 right-2 text-xs text-green-200 bg-black bg-opacity-50 px-1 rounded">
-          {intl?.home?.categories.words ?? "PAROLE"}: {wordCount}
+          <div className="absolute bottom-0 right-0 md:bottom-2 md:right-2 text-green-200 bg-black bg-opacity-50 px-1 rounded">
+           <p className='text-[0.6rem] md:text-xs'>{intl?.home?.categories.words ?? "PAROLE"}: {wordCount}</p>
           </div>
         )}
       </button>
@@ -67,7 +67,7 @@ export default function ActionButton({
       <Dialog open={openDialog} onOpenChange={setOpenDialog}>
         <DialogContent className="w-[calc(100vw-2.5rem)] max-w-5xl h-[96dvh] overflow-hidden flex flex-col">
           <DialogHeader>
-            <DialogTitle className='text-3xl text-green-600 font-bold'>{actionTitle}</DialogTitle>
+            <DialogTitle className='text-lg md:text-3xl text-green-600 font-bold'>{actionTitle}</DialogTitle>
           </DialogHeader>
           {loadingWords ? (
               <div className="flex justify-center py-8">

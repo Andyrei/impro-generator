@@ -31,7 +31,7 @@ export default function Screen({ showDataAction }: Props) {
   const defaultMessage = intl?.home?.screen?.default_message ?? 'Scegli quello che vuoi e improvvisa';
 
   return (
-    <div className="w-full h-72 flex justify-center items-center radial-gradient">
+    <div className="w-full min-h-52 md:py-32 flex justify-center items-center radial-gradient">
       <div className="screen_noise" />
       <div className="screen_overlay" />
       {isLoading ? (
@@ -43,7 +43,7 @@ export default function Screen({ showDataAction }: Props) {
         </div>
       ) : (
         <div>
-          <p className="mx-5 text-center">
+          <p className="mx-5 text-center text-2xl">
             {showDataAction
               ? showDataAction.word[locale] || showDataAction.word.en
               : defaultMessage}

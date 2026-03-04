@@ -71,7 +71,7 @@ export function WordsDataTable({ columns, data }: WordsDataTableProps) {
           placeholder="Cerca parola..."
           value={(table.getColumn("word")?.getFilterValue() as string) ?? ""}
           onChange={(e) => table.getColumn("word")?.setFilterValue(e.target.value)}
-          className="max-w-sm"
+          className="max-w-sm placeholder:text-sm"
         />
 
         <Select
@@ -95,11 +95,11 @@ export function WordsDataTable({ columns, data }: WordsDataTableProps) {
       {/* Table */}
         <div className="h-[calc(90vh-250px)] overflow-auto rounded-md border flex-1">
         <Table>
-          <TableHeader className="sticky top-0 z-10 bg-background shadow-sm">
+          <TableHeader className="sticky top-0 z-10 bg-background shadow-sm text-sm">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="p-0 md:p-3">
                     {header.isPlaceholder
                       ? null
                       : flexRender(header.column.columnDef.header, header.getContext())}
@@ -113,7 +113,7 @@ export function WordsDataTable({ columns, data }: WordsDataTableProps) {
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="text-lg">
+                    <TableCell key={cell.id} className="text-md md:text-lg">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -133,7 +133,7 @@ export function WordsDataTable({ columns, data }: WordsDataTableProps) {
       {/* Pagination */}
       <div className="flex items-center justify-between text-sm text-muted-foreground flex-shrink-0 pt-2">
         <span>
-          {table.getFilteredRowModel().rows.length} parole totali
+          {table.getFilteredRowModel().rows.length} parole
         </span>
         <div className="flex gap-2">
           <Button

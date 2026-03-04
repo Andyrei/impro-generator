@@ -238,6 +238,7 @@
 .btn-text {
   font-weight: bold;
   text-align: center;
+  user-select: none;
 }
 
 
@@ -583,8 +584,6 @@
 
 .glitch{
   position: relative;
-  font-family: monospace;
-  font-size: clamp(1.2rem, 2vw, 2rem);
   letter-spacing: 4px;
 }
 
