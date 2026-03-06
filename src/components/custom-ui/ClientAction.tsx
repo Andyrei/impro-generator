@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import LevelChecker from "./LevelChecker";
 import ActionButton from "./ActionButton";
 import Screen from "./Screen";
@@ -61,6 +61,25 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
     const { locale } = useLocale();
     const [loadingWord, setLoadingWord] = useState(false);
     const [fabOpenDialog, setFabOpenDialog] = useState(false);
+    
+    // state for the rate limit dialog
+    const [rateLimitDialog, setRateLimitDialog] = useState<{ open: boolean; countdown: number }>({ open: false, countdown: 0 });
+    const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    useEffect(() => {
+        if (!rateLimitDialog.open) return;
+        countdownRef.current = setInterval(() => {
+            setRateLimitDialog(prev => {
+                if (prev.countdown <= 1) {
+                    clearInterval(countdownRef.current!);
+                    return { open: false, countdown: 0 };
+                }
+                return { ...prev, countdown: prev.countdown - 1 };
+            });
+        }, 1000);
+        return () => clearInterval(countdownRef.current!);
+    }, [rateLimitDialog.open]);
+
+    //  initial state for the suggestion creation form  
     const [suggestionCreation, setSuggestionCreation] = useState({
         "category": "location",
         "title": {
@@ -131,6 +150,11 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
             let response = await fetch(
                 `./api/v1/words?level=${level}&action=${action}&sample=1${excludeParam}`
             );
+            if (response.status === 429) {
+                const retryAfter = parseInt(response.headers.get('Retry-After') ?? '30', 10);
+                setRateLimitDialog({ open: true, countdown: retryAfter });
+                return;
+            }
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             let data = await response.json();
 
@@ -139,6 +163,11 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
                 response = await fetch(
                     `./api/v1/words?level=${level}&action=${action}&sample=1`
                 );
+                if (response.status === 429) {
+                    const retryAfter = parseInt(response.headers.get('Retry-After') ?? '30', 10);
+                    setRateLimitDialog({ open: true, countdown: retryAfter });
+                    return;
+                }
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 data = await response.json();
                 setLastActions(prev => { const m = new Map(prev); m.delete(historyKey); return m; });
@@ -208,6 +237,32 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
     }
     return (
         <>
+            {/* Rate limit dialog */}
+            <Dialog open={rateLimitDialog.open} onOpenChange={(open) => {
+                if (!open) { clearInterval(countdownRef.current!); setRateLimitDialog({ open: false, countdown: 0 }); }
+            }}>
+                <DialogContent className="sm:max-w-xs text-center">
+                    <DialogHeader className="items-center">
+                        <Frown className="w-16 h-16 text-green-700 mb-2" strokeWidth={1.5} />
+                        <DialogTitle className="text-xl">Rallenta! 🫠</DialogTitle>
+                        <DialogDescription className="text-base">
+                            Hai fatto troppe richieste di fila.<br />
+                            Riprova tra{' '}
+                            <span className="font-bold text-green-700">{rateLimitDialog.countdown}s</span>
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="justify-center sm:justify-center">
+                        <Button
+                            variant="outline"
+                            disabled={rateLimitDialog.countdown > 0}
+                            onClick={() => { clearInterval(countdownRef.current!); setRateLimitDialog({ open: false, countdown: 0 }); }}
+                        >
+                            {rateLimitDialog.countdown > 0 ? `Aspetta ${rateLimitDialog.countdown}s…` : 'Riprova!'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
             {/* screen */}
             <div className="w-full bg-green-950 flex items-center justify-center relative">
                 <Screen level={level} showDataAction={showDataAction} isLoading={loadingWord} />
