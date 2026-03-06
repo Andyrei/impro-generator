@@ -6,6 +6,7 @@ import { LocaleProvider } from "../context/LocaleContext";
 import ClientThemeProvider from "@/context/ThemeContext";
 import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/custom-ui/Navbar";
+import MarqueeBanner from "@/components/custom-ui/MarqueeBanner";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -81,13 +82,7 @@ export default async function RootLayout({
                     <ClientThemeProvider>
                         <div className="mx-auto max-w-screen-sm h-[100dvh] grid grid-rows-[auto_1fr_auto] overflow-hidden">
                             <header className="bg-red-800 relative flex overflow-x-hidden">
-                                {
-                                    [1,2].map((n)=>(
-                                        <div key={n} className="animate-marquee text-lg md:text-3xl  font-bold text-center whitespace-nowrap">
-                                            !!!! VERSIONE ALPHA - V0.0.6 ANCORA IN SVILUPPO!!!!
-                                        </div>
-                                    ))
-                                }
+                                <MarqueeBanner />
                             </header>
                             <main className="overflow-y-auto">
                                 {children}
