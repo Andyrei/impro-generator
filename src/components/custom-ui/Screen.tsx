@@ -14,9 +14,10 @@ type Props = {
   level?: string;
   showDataAction?: ShowData;
   isLoading?: boolean;
+  isOffline?: boolean;
 };
 
-export default function Screen({ showDataAction, isLoading }: Props) {
+export default function Screen({ showDataAction, isLoading, isOffline }: Props) {
   const { dictionary: intl = {}, locale = 'en' } = useLocale();
 
   /* safely read the default message – if the dictionary isn’t ready
@@ -75,6 +76,12 @@ export default function Screen({ showDataAction, isLoading }: Props) {
             <div className="absolute bottom-5 text-base left-5">
               <span>{intl?.home?.screen?.difficulty ?? 'Difficoltà'}: </span>
               <span>{showDataAction.difficulty}</span>
+            </div>
+          )}
+          {isOffline && (
+            <div className="absolute bottom-5 right-5 text-xs text-green-600 flex items-center gap-1 opacity-70">
+              <span>📡</span>
+              <span>offline</span>
             </div>
           )}
         </div>

@@ -38,6 +38,8 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "../ui/slider";
 import Stopwatch from "./StopWatch";
 import { triggerHaptic } from "tactus";
+import { useOfflineWordCache } from "@/hooks/useOfflineWordCache";
+import { getOfflineWords, pickOfflineWord } from "@/lib/offlineWordCache";
 
 /**
  * ClientAction component handles the display and selection of random actions based on user interaction.
@@ -62,7 +64,10 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
     const { locale } = useLocale();
     const [loadingWord, setLoadingWord] = useState(false);
     const [fabOpenDialog, setFabOpenDialog] = useState(false);
-    
+    const [isOffline, setIsOffline] = useState(false);
+
+    useOfflineWordCache(categories);
+
     // state for the rate limit dialog
     const [rateLimitDialog, setRateLimitDialog] = useState<{ open: boolean; countdown: number }>({ open: false, countdown: 0 });
     const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -203,11 +208,36 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
             });
         } catch (e) {
             console.error(e);
-            toast.error('Failed to load word', {
-                description: 'Could not reach the server. Please check your connection and try again.',
-                position: 'top-center',
-                duration: 5000,
-            });
+            // Try offline cache before showing error
+            const offlineWords = await getOfflineWords(action, level);
+            const historyKey = `${action}__${level}`;
+            const excludeSet = lastActions.get(historyKey) ?? new Set<string>();
+            const offlineWord = pickOfflineWord(offlineWords, excludeSet);
+            if (offlineWord) {
+                if (offlineWord._id) {
+                    setLastActions(prev => {
+                        const m = new Map(prev);
+                        const s = new Set(m.get(historyKey) ?? []);
+                        s.add(String(offlineWord._id));
+                        m.set(historyKey, s);
+                        return m;
+                    });
+                }
+                const category = categories.find((cat: any) => cat._id === action);
+                setShowDataAction({
+                    word: offlineWord.word,
+                    category: category ? category.name : '',
+                    difficulty: offlineWord.difficulty,
+                });
+                setIsOffline(true);
+            } else {
+                setIsOffline(false);
+                toast.error('Offline — nessuna parola in cache', {
+                    description: 'Connettiti a internet almeno una volta per scaricare le parole offline.',
+                    position: 'top-center',
+                    duration: 5000,
+                });
+            }
         } finally {
             setLoadingWord(false);
         }
@@ -275,7 +305,7 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
 
             {/* screen */}
             <div className="w-full bg-green-950 flex items-center justify-center relative">
-                <Screen level={level} showDataAction={showDataAction} isLoading={loadingWord} />
+                <Screen level={level} showDataAction={showDataAction} isLoading={loadingWord} isOffline={isOffline} />
             </div>
 
             {/* lower part */}

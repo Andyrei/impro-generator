@@ -1,5 +1,5 @@
 import { Analytics } from "@vercel/analytics/react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/[lang]/globals.css";
 import { LocaleProvider } from "../../context/LocaleContext";
@@ -17,10 +17,22 @@ const geistMono = Geist_Mono({
     subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+    themeColor: [
+        { media: '(prefers-color-scheme: dark)', color: '#000000' },
+        { media: '(prefers-color-scheme: light)', color: '#991b1b' },
+    ],
+};
+
 export const metadata: Metadata = {
     title: "IMPRO GENERATOR",
     description: "Generatore di divertimento",
     metadataBase: new URL('https://impro-generator.vercel.app'),
+    appleWebApp: {
+        capable: true,
+        statusBarStyle: 'black-translucent',
+        title: 'IMPRO GENERATOR',
+    },
     openGraph: {
         title: 'IMPRO GENERATOR',
         description: 'Generatore di divertimento',
