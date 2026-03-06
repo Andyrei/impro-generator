@@ -44,7 +44,7 @@ const Navbar = () => {
         <>
             <div>
                 {/* Main navigation bar */}
-                <nav className="bg-black border-t border-green-900 h-16 flex items-center justify-around px-4 relative">
+                <nav className="bg-black border-t border-green-900 h-16 flex items-center justify-around px-4 relative pb-[env(safe-area-inset-bottom)]">
                     <div className="flex w-1/2 justify-around">
                         {navigation
                             .filter((item) => item.position === "left")

@@ -62,7 +62,7 @@ export default async function RootLayout({
         <html lang={lang} suppressHydrationWarning>
             <head>
                 <meta charSet="utf-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
+                <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
                 {/* Blocking script: applies dark class before first paint to prevent flash */}
                 <script
                     dangerouslySetInnerHTML={{
@@ -74,7 +74,7 @@ export default async function RootLayout({
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <LocaleProvider initialLocale={lang}>
                     <ClientThemeProvider>
-                        <div className="mx-auto max-w-screen-sm min-h-[100dvh] grid grid-rows-[auto_1fr_auto]">
+                        <div className="mx-auto max-w-screen-sm h-[100dvh] grid grid-rows-[auto_1fr_auto] overflow-hidden">
                             <header className="bg-red-800 relative flex overflow-x-hidden">
                                 {
                                     [1,2].map((n)=>(
@@ -84,7 +84,7 @@ export default async function RootLayout({
                                     ))
                                 }
                             </header>
-                            <main>
+                            <main className="overflow-y-auto">
                                 {children}
                             </main>
                             <Navbar />
