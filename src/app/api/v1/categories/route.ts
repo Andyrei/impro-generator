@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db/mongodb';
 import Category from '@/lib/db/models/category';
+import { rateLimit, getClientIp } from '@/lib/rateLimit';
 
 /* 
     Define requests of the categories that are the buttons inside the app like Place, Relation,... etc
@@ -8,6 +9,14 @@ import Category from '@/lib/db/models/category';
 
 //GET  api/v1/categories
 export async function GET(req: NextRequest) {
+    const { ok, retryAfter } = rateLimit(getClientIp(req));
+    if (!ok) {
+        return NextResponse.json(
+            { error: 'Too many requests. Please try again later.' },
+            { status: 429, headers: { 'Retry-After': String(retryAfter) } }
+        );
+    }
+
     try {
         await connectDB();
 
@@ -38,7 +47,7 @@ export async function GET(req: NextRequest) {
     } catch (error) {
         console.error('Error fetching categories:', error);
         return NextResponse.json(
-            { error: 'Failed to fetch categories', details: error instanceof Error ? error.message : String(error) },
+            { error: 'Failed to fetch categories' },
             { status: 500 }
         );
     }

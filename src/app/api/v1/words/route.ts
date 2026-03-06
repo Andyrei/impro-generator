@@ -4,6 +4,7 @@ import { connectDB } from '@/lib/db/mongodb';
 import Word from '@/lib/db/models/word';
 import type { IWord } from '@/lib/db/types/word';
 import type { FilterQuery } from 'mongoose';
+import { rateLimit, getClientIp } from '@/lib/rateLimit';
 
 
 const breaks = [0, 33, 66, 100];
@@ -15,6 +16,14 @@ function rangeForLevel(n: number) {
 
 
 export async function GET(req: NextRequest) {
+  const { ok, retryAfter } = rateLimit(getClientIp(req));
+  if (!ok) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please try again later.' },
+      { status: 429, headers: { 'Retry-After': String(retryAfter) } }
+    );
+  }
+
   const levelParam = req.nextUrl.searchParams.get('level');
   const actionParam = req.nextUrl.searchParams.get('action') ?? 'all';
 
@@ -93,8 +102,9 @@ export async function GET(req: NextRequest) {
       }
     );
   } catch (error) {
+    console.error('[/api/v1/words]', error);
     return NextResponse.json(
-      { error: 'Failed to read', details: error },
+      { error: 'Failed to fetch words' },
       { status: 500 }
     );
   }
