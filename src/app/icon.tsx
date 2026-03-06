@@ -1,29 +1,17 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "fs/promises";
+import { join } from "path";
 
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
+export const runtime = "nodejs";
 
-export default function Icon() {
+export default async function Icon() {
+  const file = await readFile(join(process.cwd(), "public/icons/icon.png"));
+  const base64 = `data:image/png;base64,${file.toString("base64")}`;
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: 32,
-          height: 32,
-          background: "#000000",
-          borderRadius: 6,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontFamily: "monospace",
-          fontSize: 14,
-          fontWeight: 700,
-          color: "#15803d",
-        }}
-      >
-        IG
-      </div>
-    ),
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={base64} width={32} height={32} style={{ objectFit: "cover" }} alt="" />,
     { ...size }
   );
 }

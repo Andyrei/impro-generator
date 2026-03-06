@@ -1,49 +1,17 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "fs/promises";
+import { join } from "path";
 
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
+export const runtime = "nodejs";
 
-export default function AppleIcon() {
+export default async function AppleIcon() {
+  const file = await readFile(join(process.cwd(), "public/icons/icon.png"));
+  const base64 = `data:image/png;base64,${file.toString("base64")}`;
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: 180,
-          height: 180,
-          background: "#000000",
-          borderRadius: 36,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexDirection: "column",
-          fontFamily: "monospace",
-        }}
-      >
-        <div
-          style={{
-            width: 120,
-            height: 120,
-            borderRadius: "50%",
-            border: "6px solid #15803d",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <span
-            style={{
-              fontSize: 52,
-              lineHeight: 1,
-              fontWeight: 700,
-              color: "#15803d",
-              fontFamily: "monospace",
-            }}
-          >
-            IG
-          </span>
-        </div>
-      </div>
-    ),
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={base64} width={180} height={180} style={{ objectFit: "cover" }} alt="" />,
     { ...size }
   );
 }
