@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Lock scroll at the document root — only <main> scrolls inside the app shell */
+html,
+body {
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
