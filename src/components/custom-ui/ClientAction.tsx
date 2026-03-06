@@ -11,6 +11,7 @@ import {
     Image,
     Pencil,
     Camera,
+    Frown,
 } from "lucide-react";
 import FabButton from "../FabButton";
 import { toast } from "sonner";
@@ -175,7 +176,11 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
 
             const selected: IWord | undefined = data.data?.[0];
             if (!selected) {
-                console.error('No data available for the selected action.');
+                toast.warning('No words available', {
+                    description: 'There are no words for this category at the selected difficulty level.',
+                    position: 'top-center',
+                    duration: 4000,
+                });
                 return;
             }
 
@@ -198,6 +203,11 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
             });
         } catch (e) {
             console.error(e);
+            toast.error('Failed to load word', {
+                description: 'Could not reach the server. Please check your connection and try again.',
+                position: 'top-center',
+                duration: 5000,
+            });
         } finally {
             setLoadingWord(false);
         }
