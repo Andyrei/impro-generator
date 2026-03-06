@@ -11,8 +11,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
-import { DialogTitle } from "../ui/dialog"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../../../../components/ui/dropdown-menu"
+import { DialogTitle } from "../../../../../components/ui/dialog"
 import { CheckIcon, ChevronDownIcon, GlobeIcon, XIcon } from "lucide-react"
 import { useLocale } from "@/context/LocaleContext"
 import { languages } from "@/app/[lang]/getDictionary"
