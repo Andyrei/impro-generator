@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import mongoose from 'mongoose';
 import { connectDB } from '@/lib/db/mongodb';
 import Category from '@/lib/db/models/category';
-import Word from '@/lib/db/models/word';
-
-
-
 
 /* 
     Define requests of the categories that are the buttons inside the app like Place, Relation,... etc
@@ -13,40 +8,38 @@ import Word from '@/lib/db/models/word';
 
 //GET  api/v1/categories
 export async function GET(req: NextRequest) {
-
     try {
-        // Connect to the DB
         await connectDB();
-        if (mongoose.connection.readyState !== 1) {
-            return NextResponse.json(
-                { error: 'Failed to connect to the database' },
-                { status: 500 }
-            );
-        }
-    
-        // Get all categories
-        const categories = await Category.find();
 
-        const categoriesWithWordCount = await Promise.all(
-            categories.map(async (category) => {
-                const wordCount = await Word.countDocuments({ category: category._id })
+        // Single aggregation: avoids N+1 by counting words per category in one DB round-trip
+        const categories = await Category.aggregate([
+            {
+                $lookup: {
+                    from: 'words',
+                    let: { catId: '$_id' },
+                    pipeline: [
+                        { $match: { $expr: { $eq: ['$category', '$$catId'] } } },
+                        { $count: 'n' },
+                    ],
+                    as: 'wordCountArr',
+                },
+            },
+            {
+                $addFields: {
+                    wordCount: { $ifNull: [{ $arrayElemAt: ['$wordCountArr.n', 0] }, 0] },
+                },
+            },
+            { $project: { wordCountArr: 0 } },
+        ]);
 
-                // turn mongoose document → plain object so we can mutate it
-                const obj = category.toObject();
-
-                // assign name as-is since it's already a plain object
-                obj.name = category.name;   // { it: '…', en: '…' }
-
-                return { ...obj, wordCount };
-            })
-        );
-        
-        return NextResponse.json(categoriesWithWordCount);
+        return NextResponse.json(categories, {
+            headers: { 'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400' },
+        });
     } catch (error) {
-        console.error("Error fetching categories:", error);
+        console.error('Error fetching categories:', error);
         return NextResponse.json(
-        { error: 'Failed to fetch categories', details: error instanceof Error ? error.message : String(error) },
-        { status: 500 }
+            { error: 'Failed to fetch categories', details: error instanceof Error ? error.message : String(error) },
+            { status: 500 }
         );
     }
 }
