@@ -85,6 +85,13 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
         return () => clearInterval(countdownRef.current!);
     }, [rateLimitDialog.open]);
 
+    //  listen for online event to reset offline state
+    useEffect(() => {
+        const handleOnline = () => setIsOffline(false);
+        window.addEventListener('online', handleOnline);
+        return () => window.removeEventListener('online', handleOnline);
+    }, []);
+
     //  initial state for the suggestion creation form  
     const [suggestionCreation, setSuggestionCreation] = useState({
         "category": "location",
@@ -201,6 +208,7 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
             }
 
             const category = categories.find((cat: any) => cat._id === action);
+            setIsOffline(false);
             setShowDataAction({
                 word: selected.word,
                 category: category ? category.name : '',
