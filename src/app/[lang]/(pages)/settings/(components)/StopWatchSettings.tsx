@@ -22,6 +22,7 @@ import {
 } from "lucide-react"; // or whichever icon set you use
 
 import { useTheme } from "@/context/ThemeContext";
+import { Switch } from "@/components/ui/switch";
 
 const formats = [
   { value: "mm:ss:ms", label: "mm:ss:ms" },
@@ -107,4 +108,19 @@ function StopwatchTimeFormatSelector() {
   );
 }
 
-export { StopwatchTimeFormatSelector };
+function PreventScreenSleepCheckbox() {
+    const { themeSettings, setThemeSettings } = useTheme();
+    const isEnabled = themeSettings.stopwatchPreventSleep;
+
+    const toggle = () =>
+        setThemeSettings({
+            ...themeSettings,
+            stopwatchPreventSleep: !isEnabled,
+        });
+
+    return (
+        <Switch checked={isEnabled} onCheckedChange={toggle} />
+    );
+}
+
+export { StopwatchTimeFormatSelector, PreventScreenSleepCheckbox };

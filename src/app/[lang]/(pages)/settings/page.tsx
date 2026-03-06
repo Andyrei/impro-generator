@@ -1,5 +1,5 @@
 import LanguageSelector from '@/app/[lang]/(pages)/settings/(components)/LanguageSelector'
-import { StopwatchTimeFormatSelector } from './(components)/StopWatchSettings'
+import { PreventScreenSleepCheckbox, StopwatchTimeFormatSelector } from './(components)/StopWatchSettings'
 import { ThemeSelector } from './(components)/ThemeSettings'
 
 export default function page() {
@@ -12,11 +12,15 @@ export default function page() {
         <LanguageSelector />
       </div>
     </div>
-    <div className='my-10'>
+    <div className='my-10 space-y-5'>
       <h2 className='text-xl font-bold my-5'>Stopwatch settings</h2>
       <div className='flex align-middle items-center justify-between gap-5'>
         <p>Stopwatch time format</p>
         <StopwatchTimeFormatSelector />
+      </div>
+      <div className='flex align-middle items-center justify-between gap-5'>
+        <p>Prevent screen sleep</p>
+        <PreventScreenSleepCheckbox />
       </div>
     </div>
     <div className='my-10'>

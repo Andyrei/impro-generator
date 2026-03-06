@@ -15,6 +15,7 @@ interface ThemeContextProps {
   isLoading: boolean;        // whether the initial theme detection is still running
   themeSettings: {
     stopwatchTimeFormat: string; // e.g. "mm:ss:ms"
+    stopwatchPreventSleep: boolean; // whether to keep the screen awake when using the stopwatch
     theme: 'light' | 'dark' | 'system'; // current theme mode
   };
   setThemeSettings: (settings: ThemeContextProps['themeSettings']) => void; // allow consumers to update settings
@@ -29,6 +30,7 @@ interface ThemeContextProps {
 const defaultThemeContext: ThemeContextProps = {
   themeSettings: {
     stopwatchTimeFormat: "mm:ss:ms",
+    stopwatchPreventSleep: true,
     theme: "system"
   },
   setThemeSettings: () => {},

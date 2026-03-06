@@ -1,5 +1,5 @@
 // Simplified logic for a Shadcn-styled stopwatch
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Pause, Play, RotateCcw } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
@@ -9,6 +9,34 @@ export default function Stopwatch() {
     const [time, setTime] = useState(0);
     const [isRunning, setIsRunning] = useState(false);
     const { themeSettings } = useTheme();
+    const wakeLockRef = useRef<WakeLockSentinel | null>(null);
+
+    useEffect(() => {
+        const acquireWakeLock = async () => {
+            if ('wakeLock' in navigator) {
+                try {
+                    wakeLockRef.current = await navigator.wakeLock.request('screen');
+                } catch {
+                    // Wake lock request may fail (e.g. low battery), silently ignore
+                }
+            }
+        };
+
+        const releaseWakeLock = async () => {
+            if (wakeLockRef.current) {
+                await wakeLockRef.current.release();
+                wakeLockRef.current = null;
+            }
+        };
+
+        if (isRunning) {
+            acquireWakeLock();
+        } else {
+            releaseWakeLock();
+        }
+
+        return () => { releaseWakeLock(); };
+    }, [isRunning]);
 
     useEffect(() => {
         let interval: ReturnType<typeof setInterval>;
