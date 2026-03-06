@@ -13,7 +13,9 @@ type Props = {
     actionTitle: string
     wordCount?: number
     handleShowChoosenAction: (action: string) => void
-    btn_type_class?: 'classic' | 'worn' | 'inset'
+    loading: boolean, 
+    setLoading: (loading: boolean) => void
+    btn_type_class?: 'classic' | 'worn' | 'inset',
 }
 
 export default function ActionButton({
@@ -21,16 +23,17 @@ export default function ActionButton({
   actionTitle, 
   wordCount, 
   handleShowChoosenAction, 
-  btn_type_class = "classic"
+  loading, 
+  setLoading,
+  btn_type_class = "classic",
 }: Props) {
   const { dictionary: intl, locale } = useLocale();
   const [openDialog, setOpenDialog] = useState(false);
   const [words, setWords] = useState<any[]>([]);
-  const [loadingWords, setLoadingWords] = useState(false);
 
 
   const fetchWords = async () => {
-    setLoadingWords(true);
+    setLoading(true);
     setOpenDialog(true);
     try {
       // Fetch all difficulties (1-3 covers easy/med/hard) or use a dedicated endpoint
@@ -41,7 +44,7 @@ export default function ActionButton({
     } catch (e) {
       console.error(e);
     }
-    setLoadingWords(false);
+    setLoading(false);
   };
 
   const handlers = useLongPress(
@@ -69,7 +72,7 @@ export default function ActionButton({
           <DialogHeader>
             <DialogTitle className='text-lg md:text-3xl text-green-600 font-bold'>{actionTitle}</DialogTitle>
           </DialogHeader>
-          {loadingWords ? (
+          {loading ? (
               <div className="flex justify-center py-8">
                 <svg className="w-8 h-8 animate-spin text-green-700"/>
               </div>

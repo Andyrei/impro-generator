@@ -60,8 +60,7 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
     const [lastActions, setLastActions] = useState<any>(new Set());
     const [level, setLevel] = useState("1");
     const { locale } = useLocale();
-    const { isLoading, setIsLoading } = useTheme();
-    const [loadAction, setLoadAction] = useState(false);
+    const [loadingWord, setLoadingWord] = useState(false);
     const [fabOpenDialog, setFabOpenDialog] = useState(false);
     const [suggestionCreation, setSuggestionCreation] = useState({
         "category": "location",
@@ -177,7 +176,10 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
      * @returns Promise<void>
      */
     const handleShowChoosenAction = async (action: string) => {
-        setLoadAction(true);
+        // show a loading indicator on the main screen
+        setLoadingWord(true);
+        // clear the previous word immediately so the spinner is visible
+        setShowDataAction(undefined);
 
         try {
             // Make API request to fetch actions based on level and action type
@@ -212,9 +214,9 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
             );
         } catch (e) {
             console.error(e);
+        } finally {
+            setLoadingWord(false);
         }
-
-        setLoadAction(false);
     };
 
 
@@ -253,7 +255,7 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
         <>
             {/* screen */}
             <div className="w-full bg-green-950 flex items-center justify-center relative">
-                <Screen level={level} showDataAction={showDataAction} loadAction={loadAction}/>
+                <Screen level={level} showDataAction={showDataAction} isLoading={loadingWord} />
             </div>
 
             {/* lower part */}
@@ -274,6 +276,8 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
                             // actionTitle={category.name[locale] ? category.name[locale] : category.name.it}
                             actionTitle={category.name[locale] || category.name.it || category.name.en || 'Unknown'}
                             wordCount={category.wordCount}
+                            loading={loadingWord}
+                            setLoading={setLoadingWord}
                             handleShowChoosenAction={handleShowChoosenAction}
                         />
                     ))}
