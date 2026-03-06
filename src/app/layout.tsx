@@ -2,7 +2,7 @@ import { Analytics } from "@vercel/analytics/react";
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/[lang]/globals.css";
-import { LocaleProvider } from "../../context/LocaleContext";
+import { LocaleProvider } from "../context/LocaleContext";
 import ClientThemeProvider from "@/context/ThemeContext";
 import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/custom-ui/Navbar";
