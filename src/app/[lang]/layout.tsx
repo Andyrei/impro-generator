@@ -28,6 +28,11 @@ export const metadata: Metadata = {
     title: "IMPRO GENERATOR",
     description: "Generatore di divertimento",
     metadataBase: new URL('https://impro-generator.vercel.app'),
+    icons: {
+        icon: [{ url: '/icons/icon.png', type: 'image/png' }],
+        shortcut: '/icons/icon.png',
+        apple: [{ url: '/icons/icon.png' }],
+    },
     appleWebApp: {
         capable: true,
         statusBarStyle: 'black-translucent',
