@@ -47,13 +47,19 @@ export default async function RootLayout({
 }) {
     const { lang } = await params;
     return (
-        <html lang={lang}>
+        <html lang={lang} suppressHydrationWarning>
             <head>
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
+                {/* Blocking script: applies dark class before first paint to prevent flash */}
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `(function(){try{var c=localStorage.getItem('themeChoice');var dark=c==='dark'||(c!=='light'&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(dark)document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');}catch(e){}})();`,
+                    }}
+                />
             </head>
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased dark`}>
+                className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <LocaleProvider initialLocale={lang}>
                     <ClientThemeProvider>
                         <div className="mx-auto max-w-screen-sm min-h-[100dvh] grid grid-rows-[auto_1fr_auto]">

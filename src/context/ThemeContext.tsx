@@ -15,7 +15,7 @@ interface ThemeContextProps {
   isLoading: boolean;        // whether the initial theme detection is still running
   themeSettings: {
     stopwatchTimeFormat: string; // e.g. "mm:ss:ms"
-    theme: 'light' | 'dark'; // current theme mode
+    theme: 'light' | 'dark' | 'system'; // current theme mode
   };
   setThemeSettings: (settings: ThemeContextProps['themeSettings']) => void; // allow consumers to update settings
   toggleDarkMode: () => void; // flip the mode
@@ -29,7 +29,7 @@ interface ThemeContextProps {
 const defaultThemeContext: ThemeContextProps = {
   themeSettings: {
     stopwatchTimeFormat: "mm:ss:ms",
-    theme: "dark"
+    theme: "system"
   },
   setThemeSettings: () => {},
   toggleDarkMode: () => {},
@@ -55,41 +55,38 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [themeSettings, setThemeSettings] = useState<ThemeContextProps['themeSettings']>(defaultThemeContext.themeSettings);
 
-  // on first mount determine the starting theme
+  // on first mount restore the saved theme choice
   useEffect(() => {
-    // prefer stored preference
-    const savedDarkMode = localStorage.getItem('darkMode');
-    if (savedDarkMode) {
-      setThemeSettings((prev) => ({ ...prev, theme: JSON.parse(savedDarkMode) ? "dark" : "light" }));
-    } else {
-      // fall back to system preference
-      const prefersDark =
-        window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setThemeSettings((prev) => ({ ...prev, theme: prefersDark ? "dark" : "light" }));
-    }
+    const saved = localStorage.getItem('themeChoice') as 'light' | 'dark' | 'system' | null;
+    setThemeSettings((prev) => ({ ...prev, theme: saved ?? 'system' }));
 
-    // fake an initial loading delay so pages can show a spinner if they want
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
+    const timer = setTimeout(() => setIsLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
 
-  // whenever the mode changes, update the `document` class and persist it
+  // whenever theme changes: apply the correct class and listen for system changes
   useEffect(() => {
-    if (themeSettings.theme === "dark") {
-      document.documentElement.classList.add('dark');
+    const applyDark = (dark: boolean) => {
+      document.documentElement.classList.toggle('dark', dark);
+    };
+
+    if (themeSettings.theme === 'system') {
+      const mq = window.matchMedia('(prefers-color-scheme: dark)');
+      applyDark(mq.matches);
+      const handler = (e: MediaQueryListEvent) => applyDark(e.matches);
+      mq.addEventListener('change', handler);
+      localStorage.setItem('themeChoice', 'system');
+      return () => mq.removeEventListener('change', handler);
     } else {
-      document.documentElement.classList.remove('dark');
+      applyDark(themeSettings.theme === 'dark');
+      localStorage.setItem('themeChoice', themeSettings.theme);
     }
-    localStorage.setItem('darkMode', JSON.stringify(themeSettings.theme === "dark"));
   }, [themeSettings.theme]);
 
   const toggleDarkMode = () => {
     setThemeSettings((prev) => ({
       ...prev,
-      theme: prev.theme === "dark" ? "light" : "dark",
+      theme: prev.theme === 'dark' ? 'light' : 'dark',
     }));
   };
 

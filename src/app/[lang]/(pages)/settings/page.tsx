@@ -1,5 +1,6 @@
 import LanguageSelector from '@/app/[lang]/(pages)/settings/(components)/LanguageSelector'
 import { StopwatchTimeFormatSelector } from './(components)/StopWatchSettings'
+import { ThemeSelector } from './(components)/ThemeSettings'
 
 export default function page() {
   return (<div className="mx-5 my-10">
@@ -16,6 +17,13 @@ export default function page() {
       <div className='flex align-middle items-center justify-between gap-5'>
         <p>Stopwatch time format</p>
         <StopwatchTimeFormatSelector />
+      </div>
+    </div>
+    <div className='my-10'>
+      <h2 className='text-xl font-bold my-5'>Theme settings</h2>
+      <div className='flex align-middle items-center justify-between gap-5'>
+        <p>Theme</p>
+        <ThemeSelector />
       </div>
     </div>
 </div>
