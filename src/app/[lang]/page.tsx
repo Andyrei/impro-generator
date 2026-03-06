@@ -3,6 +3,11 @@ import ClientAction from '@/components/custom-ui/ClientAction';
 import { LocaleType } from './getDictionary';
 import { getCategories } from '@/lib/db/queries/getCategories';
 
+export const revalidate = 3600;
+
+export async function generateStaticParams() {
+  return [{ lang: 'en' }, { lang: 'it' }, { lang: 'ro' }];
+}
 
 type Props = {
   params: Promise<{
