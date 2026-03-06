@@ -37,6 +37,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "../ui/slider";
+import Stopwatch from "./StopWatch";
 
 /**
  * ClientAction component handles the display and selection of random actions based on user interaction.
@@ -263,7 +264,7 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
                     level={level}
                     setLevel={setLevel}
                 />
-
+                <Stopwatch />
                 {/* buttons */}
                 <div className="grid grid-cols-4 row-auto gap-4 m-2">
                     {categories?.map((category) => (
