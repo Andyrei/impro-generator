@@ -11,11 +11,13 @@ export default function Stopwatch() {
     const { themeSettings } = useTheme();
 
     useEffect(() => {
-        let interval: any;
+        let interval: ReturnType<typeof setInterval>;
         if (isRunning) {
-        interval = setInterval(() => setTime(prev => prev + 10), 10);
+            const startTime = Date.now() - time;
+            interval = setInterval(() => setTime(Date.now() - startTime), 10);
         }
         return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isRunning]);
 
     // Format time (mm:ss:ms)
