@@ -76,6 +76,6 @@ export function proxy(request: NextRequest) {
 export const config = {
     matcher: [
         // Match root and all non-asset paths
-        '/((?!api|_next/static|_next/image|favicon.ico|og-image|twitter-image|sitemap.xml|robots.txt).*)',
+        '/((?!api|admin|_next/static|_next/image|favicon.ico|og-image|twitter-image|sitemap.xml|robots.txt).*)',
     ]
 }
