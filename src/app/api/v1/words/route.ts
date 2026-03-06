@@ -49,18 +49,48 @@ export async function GET(req: NextRequest) {
     }
     if (levelRange) query.difficulty = levelRange;
 
-    const words = await Word.find(query); // simple find with object
+    const sampleParam = req.nextUrl.searchParams.get('sample');
+    if (sampleParam === '1') {
+      const excludeParam = req.nextUrl.searchParams.get('exclude') ?? '';
+      const excludeIds = excludeParam
+        .split(',')
+        .filter(id => mongoose.isValidObjectId(id))
+        .map(id => new mongoose.Types.ObjectId(id));
+
+      const pipeline: any[] = [{ $match: query }];
+      if (excludeIds.length > 0) {
+        pipeline.push({ $match: { _id: { $nin: excludeIds } } });
+      }
+      pipeline.push({ $sample: { size: 1 } });
+
+      const [word] = await Word.aggregate(pipeline);
+      return NextResponse.json(
+        { data: word ? [word] : [] },
+        { status: 200, headers: { 'Cache-Control': 'no-store' } }
+      );
+    }
+
+    const limitParam = req.nextUrl.searchParams.get('limit');
+    const limit = limitParam ? Math.min(Math.max(parseInt(limitParam) || 50, 1), 200) : null;
+
+    const words = limit
+      ? await Word.find(query).limit(limit)
+      : await Word.find(query);
 
     return NextResponse.json(
       {
         metadata: {
           total: words.length,
-          action: actionParam,          // fixed typo
+          action: actionParam,
           level: { value: levelParam, range: levelRange },
+          ...(limit !== null && { limit }),
         },
         data: words,
       },
-      { status: 200 }
+      {
+        status: 200,
+        headers: { 'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400' },
+      }
     );
   } catch (error) {
     return NextResponse.json(

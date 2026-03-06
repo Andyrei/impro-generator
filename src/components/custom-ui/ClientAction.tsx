@@ -1,14 +1,12 @@
 "use client";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import LevelChecker from "./LevelChecker";
 import ActionButton from "./ActionButton";
-import { randomIntFromInterval } from "@/lib/general";
 import Screen from "./Screen";
 import { ICategory } from "@/lib/db/types/category";
 import { IWord } from "@/lib/db/types/word";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme } from '@/context/ThemeContext';
 import {
     Image,
     Pencil,
@@ -58,7 +56,7 @@ import { triggerHaptic } from "tactus";
 
 export default function ClientAction({categories}: {categories: ICategory[]}) {
     const [showDataAction, setShowDataAction] = useState<any>();
-    const [lastActions, setLastActions] = useState<any>(new Set());
+    const [lastActions, setLastActions] = useState<Map<string, Set<string>>>(new Map());
     const [level, setLevel] = useState("1");
     const { locale } = useLocale();
     const [loadingWord, setLoadingWord] = useState(false);
@@ -115,105 +113,60 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
     };
 
     /**
-     * Selects a random action from the data array while avoiding recently used actions
-     * @param data Array of possible actions to choose from
-     * @returns A random ActionType object or undefined if data is empty
-     */
-    const selectRandomObject = useCallback(
-        (data: IWord[], action: string) => {
-            // Return early if no data is available
-            if (!data?.length) return undefined;
-            const currentLastActions = new Set(lastActions);
-
-            // Update the set of recently used actions
-            setLastActions(() => {
-                // Reset history if all items have been shown
-                if (currentLastActions.size >= data.length) return new Set();
-
-                let randomIndex;
-                let selectedObject;
-                let attempts = 0;
-
-                // Keep trying until we find an action that hasn't been used recently
-                do {
-                    randomIndex = randomIntFromInterval(0, data.length - 1); // Corrected range
-                    selectedObject = data[randomIndex];
-                    attempts++;
-                    // Prevent infinite loops if we can't find a unique action
-                    if (attempts > data.length * 2) {
-                        console.error(
-                            "Too many attempts to find a unique random object. Check your data."
-                        );
-                        return currentLastActions;
-                    }
-                } while (
-                    selectedObject._id !== undefined &&
-                    currentLastActions.has(selectedObject._id)
-                );
-
-                // Add the selected action to recently used set
-                if (selectedObject._id !== undefined) {
-                    currentLastActions.add(selectedObject._id);
-                }
-                return currentLastActions;
-            });
-
-            // Select a new random action that hasn't been used recently
-            let randomIndex;
-            let selectedObject;
-            do {
-                randomIndex = randomIntFromInterval(0, data.length - 1); // Corrected range
-                selectedObject = data[randomIndex];
-            } while (currentLastActions.has(selectedObject._id));
-            return selectedObject;
-        },
-        []
-    );
-
-    /**
-     * Fetches and displays a random action based on the selected level and action type
-     * @param action - The type of action to fetch (e.g., 'characters', 'location')
-     * @throws Will throw an error if the API request fails
-     * @returns Promise<void>
+     * Fetches one random word server-side via MongoDB $sample, excluding recently shown words.
+     * History is tracked per category+level key and resets when all words have been seen.
      */
     const handleShowChoosenAction = async (action: string) => {
-        triggerHaptic()
-        // show a loading indicator on the main screen
+        triggerHaptic();
         setLoadingWord(true);
-        // clear the previous word immediately so the spinner is visible
         setShowDataAction(undefined);
 
         try {
-            // Make API request to fetch actions based on level and action type
-            const response = await fetch(
-                `./api/v1/words?level=${level}&action=${action}`
+            const historyKey = `${action}__${level}`;
+            const excludeSet = lastActions.get(historyKey) ?? new Set<string>();
+            const excludeParam = excludeSet.size > 0
+                ? `&exclude=${[...excludeSet].join(',')}`
+                : '';
+
+            let response = await fetch(
+                `./api/v1/words?level=${level}&action=${action}&sample=1${excludeParam}`
             );
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`); // Handle HTTP errors
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            let data = await response.json();
+
+            // All words for this category+level have been shown — reset history and retry
+            if (!data.data?.length && excludeSet.size > 0) {
+                response = await fetch(
+                    `./api/v1/words?level=${level}&action=${action}&sample=1`
+                );
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                data = await response.json();
+                setLastActions(prev => { const m = new Map(prev); m.delete(historyKey); return m; });
             }
-            // Parse response and select a random action
-            const data = await response.json();
-            const selected: IWord | undefined = selectRandomObject(
-                data.data,
-                action
-            );
+
+            const selected: IWord | undefined = data.data?.[0];
             if (!selected) {
-                console.error("No data available for the selected action.");
+                console.error('No data available for the selected action.');
                 return;
             }
 
-            // Fetch category name
-            const category = categories.find((cat: any) => cat._id === selected?.category);
-            const foundCategoryName = category ? category.name : '';
+            // Track this word as seen for this category+level
+            if (selected._id) {
+                setLastActions(prev => {
+                    const m = new Map(prev);
+                    const s = new Set(m.get(historyKey) ?? []);
+                    s.add(String(selected._id));
+                    m.set(historyKey, s);
+                    return m;
+                });
+            }
 
-            // Update state with the selected action
-            setShowDataAction(
-                selected && {
-                    word: selected.word,
-                    category: foundCategoryName,
-                    difficulty: selected.difficulty,
-                }
-            );
+            const category = categories.find((cat: any) => cat._id === action);
+            setShowDataAction({
+                word: selected.word,
+                category: category ? category.name : '',
+                difficulty: selected.difficulty,
+            });
         } catch (e) {
             console.error(e);
         } finally {
