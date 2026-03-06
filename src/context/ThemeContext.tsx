@@ -13,7 +13,11 @@ import React, {
  */
 interface ThemeContextProps {
   isLoading: boolean;        // whether the initial theme detection is still running
-  isDarkMode: boolean;       // current mode flag
+  themeSettings: {
+    stopwatchTimeFormat: string; // e.g. "mm:ss:ms"
+    theme: 'light' | 'dark'; // current theme mode
+  };
+  setThemeSettings: (settings: ThemeContextProps['themeSettings']) => void; // allow consumers to update settings
   toggleDarkMode: () => void; // flip the mode
   setIsLoading: (loading: boolean) => void; // allow consumers to dismiss the loading spinner
 }
@@ -23,10 +27,14 @@ interface ThemeContextProps {
  * the functions are no‑ops so calling them won’t crash.
  */
 const defaultThemeContext: ThemeContextProps = {
-  isLoading: true,
-  isDarkMode: false,
+  themeSettings: {
+    stopwatchTimeFormat: "mm:ss:ms",
+    theme: "dark"
+  },
+  setThemeSettings: () => {},
   toggleDarkMode: () => {},
   setIsLoading: () => {},
+  isLoading: true,
 };
 
 const ThemeContext = createContext<ThemeContextProps>(defaultThemeContext);
@@ -45,19 +53,19 @@ interface ThemeProviderProps {
  */
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [themeSettings, setThemeSettings] = useState<ThemeContextProps['themeSettings']>(defaultThemeContext.themeSettings);
 
   // on first mount determine the starting theme
   useEffect(() => {
     // prefer stored preference
     const savedDarkMode = localStorage.getItem('darkMode');
     if (savedDarkMode) {
-      setIsDarkMode(JSON.parse(savedDarkMode));
+      setThemeSettings((prev) => ({ ...prev, theme: JSON.parse(savedDarkMode) ? "dark" : "light" }));
     } else {
       // fall back to system preference
       const prefersDark =
         window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setIsDarkMode(prefersDark);
+      setThemeSettings((prev) => ({ ...prev, theme: prefersDark ? "dark" : "light" }));
     }
 
     // fake an initial loading delay so pages can show a spinner if they want
@@ -70,23 +78,27 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   // whenever the mode changes, update the `document` class and persist it
   useEffect(() => {
-    if (isDarkMode) {
+    if (themeSettings.theme === "dark") {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-    localStorage.setItem('darkMode', JSON.stringify(isDarkMode));
-  }, [isDarkMode]);
+    localStorage.setItem('darkMode', JSON.stringify(themeSettings.theme === "dark"));
+  }, [themeSettings.theme]);
 
   const toggleDarkMode = () => {
-    setIsDarkMode((prev) => !prev);
+    setThemeSettings((prev) => ({
+      ...prev,
+      theme: prev.theme === "dark" ? "light" : "dark",
+    }));
   };
 
   return (
     <ThemeContext.Provider
       value={{
         isLoading,
-        isDarkMode,
+        themeSettings,
+        setThemeSettings,
         toggleDarkMode,
         setIsLoading,
       }}
