@@ -1,25 +1,4 @@
 "use client";
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectGroup
-} from "@/components/ui/select"
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
     Home,
     Search,
@@ -31,6 +10,7 @@ import {
 import Link from "next/link";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from '@/context/ThemeContext';
+import { triggerHaptic } from "tactus";
 
 
 const Navbar = () => {
@@ -73,7 +53,8 @@ const Navbar = () => {
                                 <Link
                                     key={index}
                                     className="flex flex-col items-center gap-1 p-2 hover:text-green-400 text-green-600 transition-colors"
-                                    href={item.href}>
+                                    href={item.href}
+                                    onClick={()=>{triggerHaptic()}}>
                                     <item.icon size={22} strokeWidth={1.5} />
                                     <span className="font-mono text-[9px] uppercase tracking-widest">{item.label}</span>
                                 </Link>
@@ -90,7 +71,8 @@ const Navbar = () => {
                                 <Link
                                     key={index}
                                     className="flex flex-col items-center gap-1 p-2 hover:text-green-400 text-green-600 transition-colors"
-                                    href={item.href}>
+                                    href={item.href}
+                                    onClick={()=>{triggerHaptic()}}>
                                     <item.icon size={22} strokeWidth={1.5} />
                                     <span className="font-mono text-[9px] uppercase tracking-widest">{item.label}</span>
                                 </Link>

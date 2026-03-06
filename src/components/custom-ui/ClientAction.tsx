@@ -38,6 +38,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "../ui/slider";
 import Stopwatch from "./StopWatch";
+import { triggerHaptic } from "tactus";
 
 /**
  * ClientAction component handles the display and selection of random actions based on user interaction.
@@ -176,6 +177,7 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
      * @returns Promise<void>
      */
     const handleShowChoosenAction = async (action: string) => {
+        triggerHaptic()
         // show a loading indicator on the main screen
         setLoadingWord(true);
         // clear the previous word immediately so the spinner is visible
