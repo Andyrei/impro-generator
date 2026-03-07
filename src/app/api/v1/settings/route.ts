@@ -12,9 +12,8 @@ export async function GET() {
 
   await connectDB();
   const user = await User.findById((session.user as any).id, "settings").lean();
-  if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-  return NextResponse.json({ settings: user.settings ?? {} });
+  return NextResponse.json({ settings: user?.settings ?? {} });
 }
 
 // PATCH /api/v1/settings  { language?, theme?, stopwatchTimeFormat?, stopwatchPreventSleep?, favoriteCategories? }
