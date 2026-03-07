@@ -13,10 +13,9 @@ const WordSchema = new Schema<IWord>({
     required: true,
   },
   difficulty: {
-    type: Number,
+    type: String,
+    enum: ["easy", "medium", "hard"],
     required: true,
-    min: 1,
-    max: 100,
   },
   availableLanguages: [
     {
@@ -31,7 +30,7 @@ const WordSchema = new Schema<IWord>({
   },
 });
 
-WordSchema.index({ category: 1, difficulty: 1 });
+WordSchema.index({ category: 1, difficulty: 1 }); // difficulty is now 'easy' | 'medium' | 'hard'
 WordSchema.index({ 'word.it': 1 }, { unique: true });
 
 const Word: Model<IWord> =

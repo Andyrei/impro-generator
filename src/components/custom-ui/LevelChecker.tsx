@@ -1,19 +1,18 @@
 'use client'
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
+import { Difficulty } from '@/lib/db/types/word'
 
-export default function LevelChecker({className, level, setLevel}: {className?: string,level: string, setLevel: Dispatch<SetStateAction<string>>}) {
+export default function LevelChecker({className, level, setLevel}: {className?: string, level: Difficulty, setLevel: Dispatch<SetStateAction<Difficulty>>}) {
 
-    const handleLevelSet = (e: any, level: string) => {
-        // if the level is on 1 add active if 2 remove active from 1 and add active to 2 and so on
+    const handleLevelSet = (e: any, level: Difficulty) => {
         document.querySelectorAll('.level').forEach((el: any) => {
             el.classList.remove('active')
         })
-        
         e.classList.add('active')
-        console.log(e);
-
         setLevel(level)
     }
+
+    const indexMap: Record<Difficulty, number> = { easy: 0, medium: 1, hard: 2 };
 
     return (
         <div className={`h-10 relative ${className}`}>
@@ -21,14 +20,14 @@ export default function LevelChecker({className, level, setLevel}: {className?: 
             {/* level checker */}
             <span
                 className="diamond absolute"
-                style={{ left: `${((parseInt(level) - 1) * (100/3)) + 16.66666}%` }}
+                style={{ left: `${(indexMap[level] * (100/3)) + 16.66666}%` }}
             ></span>
 
             {/* levels */}
             <div className="flex h-full">
-                <div onClick={(e)=>handleLevelSet(e.currentTarget, '1')} className="level bg-green-500 active"><p>Facile</p></div>
-                <div onClick={(e)=>handleLevelSet(e.currentTarget, '2')} className="level bg-yellow-500"><p>Medio</p></div>
-                <div onClick={(e)=>handleLevelSet(e.currentTarget, '3')} className="level bg-red-500"><p>Difficile</p></div>
+                <div onClick={(e)=>handleLevelSet(e.currentTarget, 'easy')} className={`level bg-green-500${level === 'easy' ? ' active' : ''}`}><p>Facile</p></div>
+                <div onClick={(e)=>handleLevelSet(e.currentTarget, 'medium')} className={`level bg-yellow-500${level === 'medium' ? ' active' : ''}`}><p>Medio</p></div>
+                <div onClick={(e)=>handleLevelSet(e.currentTarget, 'hard')} className={`level bg-red-500${level === 'hard' ? ' active' : ''}`}><p>Difficile</p></div>
             </div>
         </div>
     )

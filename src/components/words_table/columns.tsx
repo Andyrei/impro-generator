@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button"
 import { IWord } from "@/lib/db/types/word"
 import { Badge } from "@/components/ui/badge"
 
-const difficultyLabel = (d: number) => {
-  if (d <= 33) return { label: `${d} - Facile`, variant: "success" }
-  if (d <= 66) return { label: `${d} - Medio`, variant: "warning" }
-  return { label: `${d} - Difficile`, variant: "destructive" }
+import { Difficulty } from "@/lib/db/types/word"
+
+const difficultyLabel = (d: Difficulty) => {
+  if (d === "easy") return { label: "Facile", variant: "success" }
+  if (d === "medium") return { label: "Medio", variant: "warning" }
+  return { label: "Difficile", variant: "destructive" }
 }
 
 interface WordColumnsOptions {

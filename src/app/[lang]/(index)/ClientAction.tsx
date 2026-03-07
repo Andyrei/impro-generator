@@ -17,6 +17,7 @@ import { triggerHaptic } from "tactus";
 import { useOfflineWordCache } from "@/hooks/useOfflineWordCache";
 import { getOfflineWords, pickOfflineWord } from "@/lib/offlineWordCache";
 import { SuggestDialog, SuggestionCreation } from "./SuggestDialog";
+import { Difficulty } from "@/lib/db/types/word";
 
 
 /**
@@ -31,7 +32,7 @@ import { SuggestDialog, SuggestionCreation } from "./SuggestDialog";
 export default function ClientAction({categories}: {categories: ICategory[]}) {
     const [showDataAction, setShowDataAction] = useState<any>();
     const [lastActions, setLastActions] = useState<Map<string, Set<string>>>(new Map());
-    const [level, setLevel] = useState("1");
+    const [level, setLevel] = useState<Difficulty>("easy");
     const { locale } = useLocale();
     const [loadingWord, setLoadingWord] = useState(false);
     const [isOffline, setIsOffline] = useState(false);

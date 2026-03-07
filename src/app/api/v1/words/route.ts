@@ -2,18 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import { connectDB } from '@/lib/db/mongodb';
 import Word from '@/lib/db/models/word';
-import type { IWord } from '@/lib/db/types/word';
+import type { Difficulty } from '@/lib/db/types/word';
 import type { FilterQuery } from 'mongoose';
 import { rateLimit, getClientIp } from '@/lib/rateLimit';
 
-
-const breaks = [0, 33, 66, 100];
-function rangeForLevel(n: number) {
-  const lo = breaks[(n - 1)] ?? 0;
-  const hi = breaks[n] ?? 100;
-  return { $gte: lo, $lte: hi };
-}
-
+// Accepts 'easy'|'medium'|'hard' directly, or legacy numeric '1'|'2'|'3'
+const LEVEL_ALIAS: Record<string, Difficulty> = {
+  '1': 'easy', '2': 'medium', '3': 'hard',
+  easy: 'easy', medium: 'medium', hard: 'hard',
+};
 
 export async function GET(req: NextRequest) {
   const { ok, retryAfter } = rateLimit(getClientIp(req));
@@ -27,15 +24,12 @@ export async function GET(req: NextRequest) {
   const levelParam = req.nextUrl.searchParams.get('level');
   const actionParam = req.nextUrl.searchParams.get('action') ?? 'all';
 
-  // map of allowed levels → difficulty query
-  const levelMap: Record<string, FilterQuery<IWord>['difficulty']> = {};
-
-  let levelRange;
+  let difficulty: Difficulty | undefined;
   if (levelParam) {
-    levelRange = rangeForLevel(parseInt(levelParam));
-    if (!levelRange) {
+    difficulty = LEVEL_ALIAS[levelParam];
+    if (!difficulty) {
       return NextResponse.json(
-        { error: 'Invalid level parameter' },
+        { error: 'Invalid level parameter. Use easy, medium, hard (or 1, 2, 3).' },
         { status: 400 }
       );
     }
@@ -49,14 +43,13 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    await connectDB();                // connection is cached internally
-    // no readyState check needed
+    await connectDB();
 
-    const query: FilterQuery<IWord> = {};
+    const query: FilterQuery<typeof Word> = {};
     if (actionParam !== 'all') {
       query.category = new mongoose.Types.ObjectId(actionParam);
     }
-    if (levelRange) query.difficulty = levelRange;
+    if (difficulty) query.difficulty = difficulty;
 
     const sampleParam = req.nextUrl.searchParams.get('sample');
     if (sampleParam === '1') {
@@ -91,7 +84,7 @@ export async function GET(req: NextRequest) {
         metadata: {
           total: words.length,
           action: actionParam,
-          level: { value: levelParam, range: levelRange },
+          level: { value: levelParam, difficulty },
           ...(limit !== null && { limit }),
         },
         data: words,

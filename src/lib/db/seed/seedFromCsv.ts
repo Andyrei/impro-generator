@@ -17,13 +17,13 @@
  * CSV Format:
  *   - Required column : en (English word, used as unique key for duplicate check)
  *   - Optional columns: any language code that exists in your DB (it, ro, fr, es, ...)
- *   - Optional column : difficulty (integer 0-100, defaults to 30 if missing)
+ *   - Optional column : difficulty (one of: easy, medium, hard — defaults to "easy" if missing or invalid)
  *   - Optional column : id (ignored, MongoDB generates its own _id)
  *
  *   Example:
  *     id,en,it,ro,fr,es,difficulty
- *     1,Vampire,Vampiro,Vampir,Vampire,Vampiro,60
- *     2,Pirate,Pirata,,Pirate,,40   ← missing ro/es is fine, just skipped
+ *     1,Vampire,Vampiro,Vampir,Vampire,Vampiro,hard
+ *     2,Pirate,Pirata,,Pirate,,medium   ← missing ro/es is fine, just skipped
  *
  * Behavior:
  *   - Words already in the DB (matched by word.en) are skipped, not overwritten
@@ -45,6 +45,14 @@ interface CSVRecord {
   id?: string;
   difficulty: string;
   [key: string]: string | undefined; // allows dynamic language code columns (en, it, ro, fr, es...)
+}
+
+import { Difficulty } from "../types/word";
+
+const VALID_DIFFICULTIES: Difficulty[] = ["easy", "medium", "hard"];
+function parseDifficulty(raw: string | undefined): Difficulty {
+  const v = (raw ?? "").trim().toLowerCase() as Difficulty;
+  return VALID_DIFFICULTIES.includes(v) ? v : "easy";
 }
 
 const [,, csvFilePath, categoryNameEn] = process.argv;
@@ -97,7 +105,7 @@ async function seedFromCSV(): Promise<void> {
     for (const record of records) {
         const enWord = record.en;
         const itWord = record.it;
-        const difficulty = parseInt(record.difficulty as string, 10);
+        const difficulty = parseDifficulty(record.difficulty);
 
         if (!enWord) {
             console.warn('Skipping row with missing English word:', record);

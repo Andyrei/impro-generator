@@ -6,6 +6,7 @@ import WordSuggestion from "@/lib/db/models/wordSuggestion";
 import Word from "@/lib/db/models/word";
 import { isAdmin } from "@/lib/isAdmin";
 import { getClientIp } from "@/lib/rateLimit";
+import { Difficulty, DIFFICULTIES } from "@/lib/db/types/word";
 
 const ANON_SUGGESTION_LIMIT = 10;
 
@@ -21,6 +22,13 @@ export async function POST(req: NextRequest) {
 
   if (!mongoose.isValidObjectId(category)) {
     return NextResponse.json({ error: "Invalid category ID" }, { status: 400 });
+  }
+
+  if (!DIFFICULTIES.includes(difficulty as Difficulty)) {
+    return NextResponse.json(
+      { error: `difficulty must be one of: ${DIFFICULTIES.join(", ")}` },
+      { status: 400 }
+    );
   }
 
   const session = await auth();
@@ -44,7 +52,7 @@ export async function POST(req: NextRequest) {
   const suggestion = await WordSuggestion.create({
     word,
     category: new mongoose.Types.ObjectId(category),
-    difficulty: Number(difficulty),
+    difficulty: difficulty as Difficulty,
     suggestedBy: session?.user ? (session.user as any).id : null,
     ip,
     status: "pending",

@@ -33,7 +33,7 @@ interface Suggestion {
   _id: string;
   word: Record<string, string>;
   category: ICategory;
-  difficulty: number;
+  difficulty: "easy" | "medium" | "hard";
   status: "pending" | "approved" | "rejected";
   suggestedBy?: { name?: string; email?: string };
   createdAt: string;
@@ -61,7 +61,7 @@ function EditWordDialog({
     it: (word.word as any).it ?? "",
     en: (word.word as any).en ?? "",
     ro: (word.word as any).ro ?? "",
-    difficulty: String(word.difficulty),
+    difficulty: String(word.difficulty) as "easy" | "medium" | "hard",
     category: String(word.category),
   });
 
@@ -78,7 +78,7 @@ function EditWordDialog({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           word: wordMap,
-          difficulty: Number(fields.difficulty),
+          difficulty: fields.difficulty,
           category: fields.category,
         }),
       });
@@ -114,15 +114,15 @@ function EditWordDialog({
             <Label className="text-right text-xs">Difficoltà</Label>
             <Select
               value={fields.difficulty}
-              onValueChange={(v) => setFields((p) => ({ ...p, difficulty: v }))}
+              onValueChange={(v: "easy" | "medium" | "hard") => setFields((p) => ({ ...p, difficulty: v }))}
             >
               <SelectTrigger className="col-span-3">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1">1 – Facile</SelectItem>
-                <SelectItem value="2">2 – Medio</SelectItem>
-                <SelectItem value="3">3 – Difficile</SelectItem>
+                <SelectItem value="easy">Facile</SelectItem>
+                <SelectItem value="medium">Medio</SelectItem>
+                <SelectItem value="hard">Difficile</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -394,7 +394,7 @@ function SuggestionsPanel() {
             <div className="flex gap-2 text-xs text-muted-foreground">
               <span>Categoria: {(s.category?.name?.it ?? s.category?.name?.en) ?? s.category?._id}</span>
               <span>·</span>
-              <span>Difficoltà: {s.difficulty}</span>
+              <span>Difficoltà: {s.difficulty === "easy" ? "Facile" : s.difficulty === "medium" ? "Medio" : "Difficile"}</span>
               {s.suggestedBy && (
                 <>
                   <span>·</span>

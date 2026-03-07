@@ -86,13 +86,13 @@ async function seedDatabase() {
       {
         word: { en: "Park", it: "Parco", ro: "Parc", fr: "Parc", es: "Parque" },
         category: categoryDocs[0]._id, // Referencing "Places"
-        difficulty: 30,
+        difficulty: "easy",
         availableLanguages: languages.map((lang) => lang._id),
       },
       {
         word: { en: "Mountain", it: "Montagna", ro: "Munte", fr: "Montagne", es: "Montaña" },
         category: categoryDocs[0]._id, // Referencing "Places"
-        difficulty: 50,
+        difficulty: "medium",
         availableLanguages: languages.map((lang) => lang._id),
       }
     ].map(word => ({

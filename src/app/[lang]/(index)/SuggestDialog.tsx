@@ -9,18 +9,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { LocaleType } from "../getDictionary";
 import { toast } from "sonner";
 import { useState } from "react";
+import { Difficulty } from "@/lib/db/types/word";
 
 export type SuggestionCreation = {
   category: string;
   word: {
     [langCode: string]: string;
   };
-  difficulty: number;
+  difficulty: Difficulty;
 };
 
 type Category = { _id: string; name: { [langCode: string]: string } };
@@ -48,7 +48,7 @@ export function SuggestDialog({
   const [suggestionCreation, setSuggestionCreation] = useState<SuggestionCreation>({
         category: "",
         word: { it: "" },
-        difficulty: 1
+        difficulty: "easy"
   });
 
   if (!handleSubmit) {
@@ -81,7 +81,7 @@ export function SuggestDialog({
                     position: 'top-center',
                 });
                 setSuggestionDialogOpen(false);
-                setSuggestionCreation({ category: "", word: { it: "", en: "" }, difficulty: 1 });
+                setSuggestionCreation({ category: "", word: { it: "", en: "" }, difficulty: "easy" });
             } else {
                 const err = await response.json().catch(() => ({}));
                 if (response.status === 429) {
@@ -159,19 +159,23 @@ export function SuggestDialog({
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="difficulty" className="text-right">
-                Difficoltà {suggestionCreation.difficulty}
+                Difficoltà
               </Label>
-              <Slider
-                id="difficulty"
-                className="col-span-3"
-                value={[suggestionCreation.difficulty]}
-                onValueChange={val =>
-                  setSuggestionCreation(prev => ({ ...prev, difficulty: val[0] }))
+              <Select
+                value={suggestionCreation.difficulty}
+                onValueChange={(val: Difficulty) =>
+                  setSuggestionCreation(prev => ({ ...prev, difficulty: val }))
                 }
-                min={1}
-                max={100}
-                step={1}
-              />
+              >
+                <SelectTrigger id="difficulty" className="col-span-3">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="easy">Facile</SelectItem>
+                  <SelectItem value="medium">Medio</SelectItem>
+                  <SelectItem value="hard">Difficile</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <DialogFooter>

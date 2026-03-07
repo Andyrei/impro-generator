@@ -4,6 +4,7 @@ import { auth } from "@/app/auth";
 import { connectDB } from "@/lib/db/mongodb";
 import Word from "@/lib/db/models/word";
 import { isAdmin } from "@/lib/isAdmin";
+import { DIFFICULTIES } from "@/lib/db/types/word";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -24,6 +25,13 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   const update: Record<string, unknown> = {};
   for (const key of allowed) {
     if (key in body) update[key] = body[key];
+  }
+
+  if ("difficulty" in update && !DIFFICULTIES.includes(update.difficulty as any)) {
+    return NextResponse.json(
+      { error: `difficulty must be one of: ${DIFFICULTIES.join(", ")}` },
+      { status: 400 }
+    );
   }
 
   if (!Object.keys(update).length) {
