@@ -83,8 +83,8 @@ export default async function RootLayout({
                 <LocaleProvider initialLocale={lang}>
                     <ClientThemeProvider>
                         <div className="mx-auto max-w-screen-sm h-[100dvh] grid grid-rows-[auto_1fr_auto] overflow-hidden shadow-2xl  dark:shadow-gray-300/30 shadow-gray-800">
-                            <header className="bg-red-800 relative flex overflow-x-hidden">
-                                <MarqueeBanner />
+                            <header className="relative flex overflow-x-hidden">
+                                {/* <MarqueeBanner /> */}
                             </header>
                             <main className="overflow-y-auto">
                                 {children}

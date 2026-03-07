@@ -1,6 +1,7 @@
 import LanguageSelector from '@/app/[lang]/(pages)/settings/(components)/LanguageSelector'
 import { PreventScreenSleepCheckbox, StopwatchTimeFormatSelector } from './(components)/StopWatchSettings'
 import { ThemeSelector } from './(components)/ThemeSettings'
+import { version, author } from '../../../../../package.json'
 
 export default function page() {
   return (<div className="mx-5 my-10">
@@ -29,6 +30,28 @@ export default function page() {
         <p>Theme</p>
         <ThemeSelector />
       </div>
+    </div>
+    <div className="mt-32 bg-background flex flex-col items-center gap-2 text-xs text-muted-foreground">
+      <div className="flex items-center gap-3">
+        <a
+          href="https://github.com/Andyrei/impro-generator"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-foreground transition-colors underline underline-offset-4"
+        >
+          GitHub
+        </a>
+        <span>·</span>
+        <a
+          href="https://github.com/Andyrei/impro-generator/issues/new"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-foreground transition-colors underline underline-offset-4"
+        >
+          Report an issue
+        </a>
+      </div>
+      <span>v{version}</span>
     </div>
 </div>
 )
