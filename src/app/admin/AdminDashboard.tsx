@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { ChevronDown, ChevronRight, Check, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { NotificationBell } from "@/components/custom-ui/NotificationBadge";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -436,6 +437,14 @@ type Tab = "words" | "suggestions";
 
 export default function AdminDashboard({ categories }: AdminDashboardProps) {
   const [tab, setTab] = useState<Tab>("words");
+  const [suggestionCount, setSuggestionCount] = useState(0);
+
+  useEffect(() => {
+    fetch("/api/v1/suggestions?status=pending")
+      .then((r) => r.ok ? r.json() : { data: [] })
+      .then((d) => setSuggestionCount((d.data ?? []).length))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const hash = window.location.hash.replace("#", "");
@@ -455,13 +464,21 @@ export default function AdminDashboard({ categories }: AdminDashboardProps) {
           <button
             key={t}
             onClick={() => switchTab(t)}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
+            className={`relative px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
               tab === t
                 ? "border-foreground text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
             {t === "words" ? "Parole" : "Suggerimenti"}
+            {t === "suggestions" && suggestionCount > 0 && (
+              <Badge
+                variant="destructive"
+                className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 rounded-full text-[10px]"
+              >
+                {suggestionCount}
+              </Badge>
+            )}
           </button>
         ))}
       </div>
