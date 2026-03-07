@@ -7,8 +7,11 @@ const store = new Map<string, { count: number; resetAt: number }>();
 
 export function getClientIp(req: NextRequest): string {
   const forwarded = req.headers.get('x-forwarded-for');
-  if (forwarded) return forwarded.split(',')[0].trim();
-  return req.headers.get('x-real-ip') ?? 'unknown';
+  const raw = forwarded
+    ? forwarded.split(',')[0].trim()
+    : (req.headers.get('x-real-ip') ?? 'unknown');
+  // normalise IPv6 loopback to its IPv4 equivalent
+  return raw === '::1' ? '127.0.0.1' : raw;
 }
 
 export function rateLimit(ip: string): { ok: boolean; retryAfter: number } {

@@ -7,53 +7,33 @@ import { ICategory } from "@/lib/db/types/category";
 import { IWord } from "@/lib/db/types/word";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useLocale } from "@/context/LocaleContext";
-import {
-    Image,
-    Pencil,
-    Camera,
-    Frown,
-} from "lucide-react";
-import FabButton from "../../../components/FabButton";
+import { Image, Pencil, Camera, Frown,} from "lucide-react";
+import FabButton from "@/components/FabButton";
 import { toast } from "sonner";
-
 import { Button } from "@/components/ui/button";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-import Stopwatch from "../../../components/custom-ui/StopWatch";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,} from "@/components/ui/dialog";
+import Stopwatch from "@/components/custom-ui/StopWatch";
 import { triggerHaptic } from "tactus";
 import { useOfflineWordCache } from "@/hooks/useOfflineWordCache";
 import { getOfflineWords, pickOfflineWord } from "@/lib/offlineWordCache";
 import { SuggestDialog, SuggestionCreation } from "./SuggestDialog";
 
-/**
- * ClientAction component handles the display and selection of random actions based on user interaction.
- *
- * This component maintains the state for the currently displayed action, the set of previously shown actions,
- * and the difficulty level. It provides functionality to fetch actions from an API and select a random action
- * that hasn't been shown recently.
- *
- * @component
- * @returns [JSX.Element] The rendered component.
- *
- * @example
- ** Usage example:
- * <ClientAction />
- *
- */
 
+/**
+ * ClientAction component is responsible for rendering the main interactive screen of the app, including:
+ * - The "screen" area where the chosen word and category are displayed.
+ * - Difficulty level selector (LevelChecker).
+ * - Action buttons for each category.
+ * - A floating action button (FAB) to open the suggestion dialog.
+ * - Offline word cache management.
+ * 
+ */
 export default function ClientAction({categories}: {categories: ICategory[]}) {
     const [showDataAction, setShowDataAction] = useState<any>();
     const [lastActions, setLastActions] = useState<Map<string, Set<string>>>(new Map());
     const [level, setLevel] = useState("1");
     const { locale } = useLocale();
     const [loadingWord, setLoadingWord] = useState(false);
-    const [fabOpenDialog, setFabOpenDialog] = useState(false);
     const [isOffline, setIsOffline] = useState(false);
 
     useOfflineWordCache(categories);
@@ -85,69 +65,6 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
     //  initial state for the suggestion creation form  
     const [suggestionDialogOpen, setSuggestionDialogOpen] = useState(false);
     const [suggestionSubmitting, setSuggestionSubmitting] = useState(false);
-    const [suggestionCreation, setSuggestionCreation] = useState<SuggestionCreation>({
-        category: "",
-        word: { it: "", en: "" },
-        difficulty: 1
-    });
-
-    
-    const fabActions = [
-        {
-            icon: Image,
-            label: "Relay",
-            onClick: () => console.log("Relay clicked"),
-        },
-        {
-            icon: Camera,
-            label: "Camera",
-            onClick: () => console.log("Camera clicked"),
-        },
-        {
-            icon: Pencil,
-            label: "Write",
-            onClick: () => console.log("Write clicked"),
-        },
-    ];
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!suggestionCreation.category) {
-            toast.error('Seleziona una categoria', { position: 'top-center' });
-            return;
-        }
-        if (!suggestionCreation.word.it && !suggestionCreation.word.en) {
-            toast.error('Inserisci almeno una parola', { position: 'top-center' });
-            return;
-        }
-
-        setSuggestionSubmitting(true);
-        try {
-            const response = await fetch('/api/v1/suggestions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    word: suggestionCreation.word,
-                    category: suggestionCreation.category,
-                    difficulty: suggestionCreation.difficulty,
-                }),
-            });
-
-            if (response.ok) {
-                toast.success('Suggerimento inviato!', {
-                    description: 'Grazie! Il tuo suggerimento verrà revisionato.',
-                    position: 'top-center',
-                });
-                setSuggestionDialogOpen(false);
-                setSuggestionCreation({ category: "", word: { it: "", en: "" }, difficulty: 1 });
-            } else {
-                const err = await response.json().catch(() => ({}));
-                toast.error('Errore', { description: err.error ?? 'Invio fallito.', position: 'top-center' });
-            }
-        } finally {
-            setSuggestionSubmitting(false);
-        }
-    };
 
     /**
      * Fetches one random word server-side via MongoDB $sample, excluding recently shown words.
@@ -348,20 +265,17 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
             </div>
 
             <FabButton
-                fabActions={fabActions}
                 onFabClick={() => {
-                    setSuggestionCreation({ category: categories[0]?._id as string ?? "", word: { it: "", en: "" }, difficulty: 1 });
+                    triggerHaptic();
                     setSuggestionDialogOpen(true);
                 }}
             />
             <SuggestDialog
                 suggestionDialogOpen={suggestionDialogOpen}
                 setSuggestionDialogOpen={setSuggestionDialogOpen}
-                suggestionCreation={suggestionCreation}
-                setSuggestionCreation={setSuggestionCreation}
-                handleSubmit={handleSubmit}
                 categories={categories}
                 locale={locale}
+                setSuggestionSubmitting={setSuggestionSubmitting}
                 suggestionSubmitting={suggestionSubmitting}
             />
         </>

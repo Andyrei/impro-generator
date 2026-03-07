@@ -5,6 +5,9 @@ import { connectDB } from "@/lib/db/mongodb";
 import WordSuggestion from "@/lib/db/models/wordSuggestion";
 import Word from "@/lib/db/models/word";
 import { isAdmin } from "@/lib/isAdmin";
+import { getClientIp } from "@/lib/rateLimit";
+
+const ANON_SUGGESTION_LIMIT = 10;
 
 // POST /api/v1/suggestions  { word: {en, it, ...}, category, difficulty }
 // Anyone can submit a word suggestion (anonymous or logged in)
@@ -20,18 +23,30 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid category ID" }, { status: 400 });
   }
 
-  if (![1, 2, 3].includes(Number(difficulty))) {
-    return NextResponse.json({ error: "difficulty must be 1, 2, or 3" }, { status: 400 });
-  }
-
   const session = await auth();
   await connectDB();
+
+  let ip: string | null = null;
+
+  if (!session?.user) {
+    ip = getClientIp(req);
+    // include legacy ::1 entries so existing dev docs are still counted
+    const ipVariants = ip === '127.0.0.1' ? ['127.0.0.1', '::1'] : [ip];
+    const count = await WordSuggestion.countDocuments({ ip: { $in: ipVariants }, suggestedBy: null });
+    if (count >= ANON_SUGGESTION_LIMIT) {
+      return NextResponse.json(
+        { error: `Puoi inviare al massimo ${ANON_SUGGESTION_LIMIT} suggerimenti senza essere registrato.` },
+        { status: 429 }
+      );
+    }
+  }
 
   const suggestion = await WordSuggestion.create({
     word,
     category: new mongoose.Types.ObjectId(category),
     difficulty: Number(difficulty),
     suggestedBy: session?.user ? (session.user as any).id : null,
+    ip,
     status: "pending",
   });
 
