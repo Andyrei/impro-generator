@@ -6,4 +6,5 @@ export interface IWord extends Document {
     category: Types.ObjectId; // Reference to Category
     difficulty: number; // From 1 to 100
     availableLanguages: Types.ObjectId[]; // References to Language schema
+    createdBy?: Types.ObjectId; // Optional reference to User schema
   }
