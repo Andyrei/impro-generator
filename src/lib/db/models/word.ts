@@ -24,7 +24,15 @@ const WordSchema = new Schema<IWord>({
       ref: "Language",
     },
   ],
+  createdBy: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: false, // optional, to avoid breaking existing data
+  },
 });
+
+WordSchema.index({ category: 1, difficulty: 1 });
+WordSchema.index({ 'word.it': 1 }, { unique: true });
 
 const Word: Model<IWord> =
   mongoose.models.Word || mongoose.model<IWord>("Word", WordSchema);
