@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 export default async function AdminPage() {
   const session = await auth();
   if (!isAdmin(session)) {
-    redirect("/login");
+    redirect("/");
   }
 
   const categories = await getCategories();

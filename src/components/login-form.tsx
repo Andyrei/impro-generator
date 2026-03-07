@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { auth, signIn } from "@/app/auth"
+import { isAdmin } from "@/lib/isAdmin"
 import { redirect } from "next/navigation"
 
 export async function LoginForm({
@@ -10,7 +11,8 @@ export async function LoginForm({
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
 
-  if (await auth().then(user => !!user)) {
+  const session = await auth()
+  if (isAdmin(session)) {
     return redirect("/admin")
   }
   return (
