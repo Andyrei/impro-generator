@@ -4,7 +4,7 @@ import { ICategory } from "../types/category";
 
 const CategorySchema = new Schema<ICategory>({
   name: { type: Map, of: String, required: true, unique: true },
-  description: { type: mongoose.Schema.Types.Mixed }, // Optional field for extra details
+  description: { type: Map, of: String },
 });
 
 const Category: Model<ICategory> =
