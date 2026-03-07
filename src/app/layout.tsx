@@ -57,16 +57,13 @@ export const metadata: Metadata = {
     },
 }
 
-export default async function RootLayout({
+export default function RootLayout({
     children,
-    params,
 }: {
     children: React.ReactNode;
-    params: Promise<{ lang: string }>;
 }) {
-    const { lang } = await params;
     return (
-        <html lang={lang} suppressHydrationWarning>
+        <html lang="it" suppressHydrationWarning>
             <head>
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -80,7 +77,7 @@ export default async function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <SessionProvider>
-                <LocaleProvider initialLocale={lang}>
+                <LocaleProvider initialLocale={"it"}>
                     <ClientThemeProvider>
                         <div className="mx-auto max-w-screen-sm h-[100dvh] grid grid-rows-[auto_1fr_auto] overflow-hidden shadow-2xl  dark:shadow-gray-300/30 shadow-gray-800">
                             <header className="relative flex overflow-x-hidden">
