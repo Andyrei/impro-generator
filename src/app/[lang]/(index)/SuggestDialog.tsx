@@ -4,7 +4,6 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectGroup
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -32,8 +31,19 @@ interface SuggestDialogProps {
   locale: LocaleType;
   suggestionSubmitting: boolean;
   setSuggestionSubmitting: (submitting: boolean) => void;
-  handleSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
 }
+
+const DIFFICULTY_OPTIONS: { value: Difficulty; label: string; active: string }[] = [
+  { value: "easy",   label: "Facile",    active: "bg-green-500  text-white border-green-500  shadow-green-200  shadow-md" },
+  { value: "medium", label: "Medio",     active: "bg-yellow-500 text-white border-yellow-500 shadow-yellow-200 shadow-md" },
+  { value: "hard",   label: "Difficile", active: "bg-red-500    text-white border-red-500    shadow-red-200    shadow-md" },
+];
+
+const EMPTY_SUGGESTION: SuggestionCreation = {
+  category: "",
+  word: { it: "", en: "" },
+  difficulty: "easy",
+};
 
 export function SuggestDialog({
   suggestionDialogOpen,
@@ -42,65 +52,61 @@ export function SuggestDialog({
   locale,
   suggestionSubmitting,
   setSuggestionSubmitting,
-  handleSubmit,
 }: SuggestDialogProps) {
 
-  const [suggestionCreation, setSuggestionCreation] = useState<SuggestionCreation>({
-        category: "",
-        word: { it: "" },
-        difficulty: "easy"
-  });
+  const [suggestionCreation, setSuggestionCreation] = useState<SuggestionCreation>(EMPTY_SUGGESTION);
 
-  if (!handleSubmit) {
-      handleSubmit = async (e: React.FormEvent) => { 
-        e.preventDefault();
-        if (!suggestionCreation.category) {
-            toast.error('Seleziona una categoria', { position: 'top-center' });
-            return;
-        }
-        if (!suggestionCreation.word.it && !suggestionCreation.word.en) {
-            toast.error('Inserisci almeno una parola', { position: 'top-center' });
-            return;
-        }
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
 
-        setSuggestionSubmitting(true);
-        try {
-            const response = await fetch('/api/v1/suggestions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    word: suggestionCreation.word,
-                    category: suggestionCreation.category,
-                    difficulty: suggestionCreation.difficulty,
-                }),
-            });
+    if (!suggestionCreation.category) {
+      toast.error("Seleziona una categoria", { position: "top-center" });
+      return;
+    }
+    if (!suggestionCreation.word.it && !suggestionCreation.word.en) {
+      toast.error("Inserisci almeno una parola", { position: "top-center" });
+      return;
+    }
 
-            if (response.ok) {
-                toast.success('Suggerimento inviato!', {
-                    description: 'Grazie! Il tuo suggerimento verrà revisionato.',
-                    position: 'top-center',
-                });
-                setSuggestionDialogOpen(false);
-                setSuggestionCreation({ category: "", word: { it: "", en: "" }, difficulty: "easy" });
-            } else {
-                const err = await response.json().catch(() => ({}));
-                if (response.status === 429) {
-                    toast.error('Limite raggiunto', { description: err.error ?? 'Hai raggiunto il limite di suggerimenti.', position: 'top-center' });
-                } else {
-                    toast.error('Errore', { description: err.error ?? 'Invio fallito.', position: 'top-center' });
-                }
-            }
-        } finally {
-            setSuggestionSubmitting(false);
+    setSuggestionSubmitting(true);
+    try {
+      const response = await fetch("/api/v1/suggestions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          word: suggestionCreation.word,
+          category: suggestionCreation.category,
+          difficulty: suggestionCreation.difficulty,
+        }),
+      });
+
+      if (response.ok) {
+        toast.success("Suggerimento inviato!", {
+          description: "Grazie! Il tuo suggerimento verrà revisionato.",
+          position: "top-center",
+        });
+        setSuggestionDialogOpen(false);
+        setSuggestionCreation(EMPTY_SUGGESTION);
+      } else {
+        const err = await response.json().catch(() => ({}));
+        if (response.status === 429) {
+          toast.error("Limite raggiunto", { description: err.error ?? "Hai raggiunto il limite di suggerimenti.", position: "top-center" });
+        } else {
+          toast.error("Errore", { description: err.error ?? "Invio fallito.", position: "top-center" });
         }
-    };
+      }
+    } finally {
+      setSuggestionSubmitting(false);
+    }
   }
 
   return (
-    <Dialog modal={false} open={suggestionDialogOpen} onOpenChange={(open) => !suggestionSubmitting && setSuggestionDialogOpen(open)}>
+    <Dialog
+      open={suggestionDialogOpen}
+      onOpenChange={(open) => !suggestionSubmitting && setSuggestionDialogOpen(open)}
+    >
       <DialogContent
         className="sm:max-w-[425px]"
-        onInteractOutside={(e) => suggestionSubmitting && e.preventDefault()}
         onEscapeKeyDown={(e) => suggestionSubmitting && e.preventDefault()}
       >
         <DialogHeader>
@@ -111,34 +117,32 @@ export function SuggestDialog({
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
+            {/* ── Categoria ── */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
+              <Label htmlFor="category" className="text-right">
                 Categoria
               </Label>
-              <Select
+                            <Select
                 required
                 value={suggestionCreation.category}
-                onValueChange={(val: string) =>
-                  setSuggestionCreation(prev => ({ ...prev, category: val }))
+                onValueChange={(val) =>
+                  setSuggestionCreation((prev) => ({ ...prev, category: val }))
                 }
               >
-                <SelectTrigger className="col-span-3 w-full max-w-48">
-                  <SelectValue placeholder="Select an action" />
+                <SelectTrigger id="category" className="col-span-3 w-full">
+                  <SelectValue placeholder="Seleziona categoria" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectGroup>
-                    {categories.map((category: Category) => (
-                      <SelectItem
-                        key={category._id}
-                        value={category._id as string}
-                      >
-                        {category.name[locale] || category.name.it || category.name.en || 'Unknown'}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
+                  {categories.map((category) => (
+                    <SelectItem key={category._id} value={category._id}>
+                      {category.name[locale] || category.name.it || category.name.en || "Unknown"}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
+
+            {/* ── Parola ── */}
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="word" className="text-right">
                 Parola
@@ -148,39 +152,43 @@ export function SuggestDialog({
                 required
                 placeholder="Inserisci la parola"
                 className="col-span-3"
-                value={suggestionCreation?.word?.it ?? ''}
-                onChange={e =>
-                  setSuggestionCreation(prev => ({
+                value={suggestionCreation.word.it ?? ""}
+                onChange={(e) =>
+                  setSuggestionCreation((prev) => ({
                     ...prev,
                     word: { ...prev.word, it: e.target.value },
                   }))
                 }
               />
             </div>
+
+            {/* ── Difficoltà ── */}
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="difficulty" className="text-right">
-                Difficoltà
-              </Label>
-              <Select
-                value={suggestionCreation.difficulty}
-                onValueChange={(val: Difficulty) =>
-                  setSuggestionCreation(prev => ({ ...prev, difficulty: val }))
-                }
-              >
-                <SelectTrigger id="difficulty" className="col-span-3">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="easy">Facile</SelectItem>
-                  <SelectItem value="medium">Medio</SelectItem>
-                  <SelectItem value="hard">Difficile</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label className="text-right">Difficoltà</Label>
+              <div className="col-span-3 grid grid-cols-3 gap-2">
+                {DIFFICULTY_OPTIONS.map(({ value, label, active }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() =>
+                      setSuggestionCreation((prev) => ({ ...prev, difficulty: value }))
+                    }
+                    className={`rounded-lg border-2 py-2 text-sm font-semibold transition-all ${
+                      suggestionCreation.difficulty === value
+                        ? active
+                        : "border-muted bg-background text-muted-foreground hover:border-foreground/30"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
+
           <DialogFooter>
             <Button type="submit" disabled={suggestionSubmitting}>
-              {suggestionSubmitting ? 'Invio…' : 'Invia suggerimento'}
+              {suggestionSubmitting ? "Invio…" : "Invia suggerimento"}
             </Button>
           </DialogFooter>
         </form>
