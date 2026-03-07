@@ -95,29 +95,32 @@ async function seedFromCSV(): Promise<void> {
     const wordOps: mongoose.AnyBulkWriteOperation[] = [];
 
     for (const record of records) {
-        const engWord = record.en;
-        const itaWord = record.it;
+        const enWord = record.en;
+        const itWord = record.it;
         const difficulty = parseInt(record.difficulty as string, 10);
 
-        if (!engWord) {
+        if (!enWord) {
             console.warn('Skipping row with missing English word:', record);
             continue;
         }
 
-        const existing = await Word.findOne({ 'word.en': engWord }, null, { session });
+        const existingSet = new Set(
+          (await Word.find({ 'word.en': { $in: records.map(r => r.en) } }, 'word.en', { session }))
+            .map(w => w.word.it)
+        );
 
-        if (existing && !forceUpdate) {
-            console.log(`  [SKIP] "${engWord}" already exists.`);
+        if (itWord && existingSet.has(itWord) && !forceUpdate) {
+            console.log(`  [SKIP] "${enWord}" already exists.`);
             skippedCount++;
             continue;
         }
 
         wordOps.push({
             updateOne: {
-            filter: { 'word.en': engWord },
+            filter: { 'word.en': enWord },
             update: {
                 $set: {
-                word: { en: engWord, it: itaWord },
+                word: { en: enWord, it: itWord },
                 category: category._id,
                 difficulty,
                 availableLanguages: languageIds,
