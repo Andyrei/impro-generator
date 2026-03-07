@@ -11,12 +11,18 @@ import Link from "next/link";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from '@/context/ThemeContext';
 import { triggerHaptic } from "tactus";
+import { useRouter } from "next/navigation";
+import { useDoubleClick } from "@/hooks/useDoubleClick";
 
 
 const Navbar = () => {
     const { isLoading } = useTheme();
 
     const { locale } = useLocale()
+    const router = useRouter();
+    const easterEggProps = useDoubleClick(
+        () => { triggerHaptic(); router.push(`/${locale}/login`); }
+    );
 
     // const fabFunc = () => setOpen(!open);
     
@@ -61,7 +67,7 @@ const Navbar = () => {
                             ))}
                     </div>
 
-                    <div className="w-16" />
+                    <div className="w-16 h-full" onClick={easterEggProps} />
 
                     <div className="flex w-1/2 justify-around">
                         {navigation
