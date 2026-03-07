@@ -44,7 +44,7 @@ const Navbar = () => {
         <>
             <div>
                 {/* Main navigation bar */}
-                <nav className="bg-black border-t border-green-900 h-16 flex items-center justify-around px-4 relative pb-[env(safe-area-inset-bottom)]">
+                <nav className="dark:bg-black border-t dark:border-green-900 border-black h-16 flex items-center justify-around px-4 relative pb-[env(safe-area-inset-bottom)]">
                     <div className="flex w-1/2 justify-around">
                         {navigation
                             .filter((item) => item.position === "left")
@@ -52,7 +52,7 @@ const Navbar = () => {
                             .map((item, index) => (
                                 <Link
                                     key={index}
-                                    className="flex flex-col items-center gap-1 p-2 hover:text-green-400 text-green-600 transition-colors"
+                                    className="flex flex-col items-center gap-1 p-2 dark:hover:text-green-400 dark:text-green-600 text-black transition-colors"
                                     href={item.href}
                                     onClick={()=>{triggerHaptic()}}>
                                     <item.icon size={22} strokeWidth={1.5} />
@@ -70,7 +70,7 @@ const Navbar = () => {
                             .map((item, index) => (
                                 <Link
                                     key={index}
-                                    className="flex flex-col items-center gap-1 p-2 hover:text-green-400 text-green-600 transition-colors"
+                                    className="flex flex-col items-center gap-1 p-2 dark:hover:text-green-400 dark:text-green-600 text-black transition-colors"
                                     href={item.href}
                                     onClick={()=>{triggerHaptic()}}>
                                     <item.icon size={22} strokeWidth={1.5} />
