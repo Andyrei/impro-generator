@@ -7,6 +7,7 @@ import ClientThemeProvider from "@/context/ThemeContext";
 import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/custom-ui/Navbar";
 import MarqueeBanner from "@/components/custom-ui/MarqueeBanner";
+import { SessionProvider } from "next-auth/react";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -78,6 +79,7 @@ export default async function RootLayout({
             </head>
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+                <SessionProvider>
                 <LocaleProvider initialLocale={lang}>
                     <ClientThemeProvider>
                         <div className="mx-auto max-w-screen-sm h-[100dvh] grid grid-rows-[auto_1fr_auto] overflow-hidden">
@@ -91,6 +93,7 @@ export default async function RootLayout({
                         </div>
                     </ClientThemeProvider>
                 </LocaleProvider>
+                </SessionProvider>
                 <Analytics />
                 <Toaster />
             </body>
