@@ -320,12 +320,19 @@ function SuggestionsPanel() {
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [acting, setActing] = useState<string | null>(null);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/v1/suggestions?status=pending")
-      .then((r) => r.json())
+      .then(async (r) => {
+        if (!r.ok) {
+          const err = await r.json().catch(() => ({}));
+          throw new Error(err.error ?? `HTTP ${r.status}`);
+        }
+        return r.json();
+      })
       .then((d) => setSuggestions(d.data ?? []))
-      .catch(() => toast.error("Errore nel caricamento dei suggerimenti"))
+      .catch((e) => setFetchError(e.message))
       .finally(() => setLoading(false));
   }, []);
 
@@ -352,6 +359,14 @@ function SuggestionsPanel() {
       <div className="flex justify-center py-12">
         <Loader2 className="h-6 w-6 animate-spin" />
       </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <p className="text-center text-destructive py-12">
+        Errore: {fetchError}
+      </p>
     );
   }
 
@@ -422,14 +437,24 @@ type Tab = "words" | "suggestions";
 export default function AdminDashboard({ categories }: AdminDashboardProps) {
   const [tab, setTab] = useState<Tab>("words");
 
-  return (
+  useEffect(() => {
+    const hash = window.location.hash.replace("#", "");
+    if (hash === "suggestions") setTab("suggestions");
+  }, []);
+
+  const switchTab = (t: Tab) => {
+    setTab(t);
+    window.location.hash = t;
+  };
+
+  return (<>
     <div className="space-y-6">
       {/* Tab bar */}
       <div className="flex gap-1 border-b">
         {(["words", "suggestions"] as Tab[]).map((t) => (
           <button
             key={t}
-            onClick={() => setTab(t)}
+            onClick={() => switchTab(t)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors -mb-px ${
               tab === t
                 ? "border-foreground text-foreground"
@@ -453,5 +478,7 @@ export default function AdminDashboard({ categories }: AdminDashboardProps) {
       {/* Suggestions tab */}
       {tab === "suggestions" && <SuggestionsPanel />}
     </div>
-  );
+    
+
+  </>);
 }

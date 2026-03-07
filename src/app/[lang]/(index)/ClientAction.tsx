@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import LevelChecker from "./LevelChecker";
-import ActionButton from "./ActionButton";
-import Screen from "./Screen";
+import LevelChecker from "../../../components/custom-ui/LevelChecker";
+import ActionButton from "../../../components/custom-ui/ActionButton";
+import Screen from "../../../components/custom-ui/Screen";
 import { ICategory } from "@/lib/db/types/category";
 import { IWord } from "@/lib/db/types/word";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,7 +13,7 @@ import {
     Camera,
     Frown,
 } from "lucide-react";
-import FabButton from "../FabButton";
+import FabButton from "../../../components/FabButton";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -25,21 +25,11 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectGroup
-} from "@/components/ui/select"
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Slider } from "../ui/slider";
-import Stopwatch from "./StopWatch";
+import Stopwatch from "../../../components/custom-ui/StopWatch";
 import { triggerHaptic } from "tactus";
 import { useOfflineWordCache } from "@/hooks/useOfflineWordCache";
 import { getOfflineWords, pickOfflineWord } from "@/lib/offlineWordCache";
+import { SuggestDialog, SuggestionCreation } from "./SuggestDialog";
 
 /**
  * ClientAction component handles the display and selection of random actions based on user interaction.
@@ -93,14 +83,13 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
     }, []);
 
     //  initial state for the suggestion creation form  
-    const [suggestionCreation, setSuggestionCreation] = useState({
-        "category": "location",
-        "title": {
-            "it": "",
-            "en": ""
-        },
-        "difficulty": 0
-    })
+    const [suggestionDialogOpen, setSuggestionDialogOpen] = useState(false);
+    const [suggestionSubmitting, setSuggestionSubmitting] = useState(false);
+    const [suggestionCreation, setSuggestionCreation] = useState<SuggestionCreation>({
+        category: "",
+        word: { it: "", en: "" },
+        difficulty: 1
+    });
 
     
     const fabActions = [
@@ -121,26 +110,42 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
         },
     ];
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!suggestionCreation.category) {
+            toast.error('Seleziona una categoria', { position: 'top-center' });
+            return;
+        }
+        if (!suggestionCreation.word.it && !suggestionCreation.word.en) {
+            toast.error('Inserisci almeno una parola', { position: 'top-center' });
+            return;
+        }
 
-        // Make API request to fetch actions based on level and action type
-        const response = await fetch(
-          `./api/v0/action?&action=${suggestionCreation.category}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(suggestionCreation),
-          }
-        );
+        setSuggestionSubmitting(true);
+        try {
+            const response = await fetch('/api/v1/suggestions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    word: suggestionCreation.word,
+                    category: suggestionCreation.category,
+                    difficulty: suggestionCreation.difficulty,
+                }),
+            });
 
-        if (response.ok) {
-          const json = await response.json();
-          console.log(json);
-        } else {
-          console.error('Failed to fetch data');
+            if (response.ok) {
+                toast.success('Suggerimento inviato!', {
+                    description: 'Grazie! Il tuo suggerimento verrà revisionato.',
+                    position: 'top-center',
+                });
+                setSuggestionDialogOpen(false);
+                setSuggestionCreation({ category: "", word: { it: "", en: "" }, difficulty: 1 });
+            } else {
+                const err = await response.json().catch(() => ({}));
+                toast.error('Errore', { description: err.error ?? 'Invio fallito.', position: 'top-center' });
+            }
+        } finally {
+            setSuggestionSubmitting(false);
         }
     };
 
@@ -343,114 +348,22 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
             </div>
 
             <FabButton
-                fabActions={fabActions} 
-                onFabClick={
-                    ()=>toast.warning("La feature non é ancora disponibile", {
-                        description: "Questa feature permetterà di inserire nuovi sugerimenti",
-                        position: "top-center",
-                        duration: 5000
-                    })
-                } 
+                fabActions={fabActions}
+                onFabClick={() => {
+                    setSuggestionCreation({ category: categories[0]?._id as string ?? "", word: { it: "", en: "" }, difficulty: 1 });
+                    setSuggestionDialogOpen(true);
+                }}
             />
-            {/* <Dialog open={fabOpenDialog} onOpenChange={setFabOpenDialog}>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Aggiungi nuovo suggerimento</DialogTitle>
-                        <DialogDescription>
-                            Inserisci un nuovo suggerimento per il gioco
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="name" className="text-right">
-                                Action
-                            </Label>
-                            <Select required value={suggestionCreation.category} onValueChange={(val) => setSuggestionCreation(prev => ({
-                                ...prev,
-                                category: val
-                            }))}>
-                                <SelectTrigger className="col-span-3 w-full max-w-48">
-                                    <SelectValue placeholder="Select an action" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                    {categories.map((category) => (
-                                        <SelectItem 
-                                            key={category._id} 
-                                            value={
-                                                category.name[locale] || 
-                                                category.name.it || 
-                                                category.name.en || 
-                                                'Unknown'
-                                            }>
-                                            {category.name[locale] || category.name.it || category.name.en || 'Unknown'}
-                                        </SelectItem>
-                                    ))}
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="titleIT" className="text-right">
-                                Titolo [IT]
-                            </Label>
-                            <Input
-                                id="titleIT"
-                                required
-                                placeholder="Inserisci il titolo"
-                                className="col-span-3"
-                                value={suggestionCreation?.title?.it ?? ''}
-                                onChange={e => setSuggestionCreation(prev => ({
-                                    ...prev,
-                                    title: {
-                                        ...prev.title,
-                                        it: e.target.value
-                                    }
-                                }))}
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="titleEN" className="text-right">
-                              Titolo [EN]
-                            </Label>
-                            <Input
-                                id="titleEN"
-                                placeholder="Insert title"
-                                value={suggestionCreation?.title?.en ?? ''}
-                                onChange={e => setSuggestionCreation(prev => ({
-                                    ...prev,
-                                    title: {
-                                        ...prev.title,
-                                        en: e.target.value
-                                    }
-                                }))}
-                                className="col-span-3"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="difficulty" className="text-right">
-                              Difficoltà {suggestionCreation?.difficulty}
-                            </Label>
-                            <Slider
-                              id="difficulty"
-                              className="col-span-3"
-                              onValueChange={val => setSuggestionCreation(prev => ({
-                                ...prev,
-                                difficulty: val[0]
-                              }))}
-                              value={[suggestionCreation.difficulty]}
-                              defaultValue={[33]}
-                              min={1}
-                              max={100}
-                              step={1} 
-                            />
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button type="submit" onClick={handleSubmit}>Save changes</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog> */}
+            <SuggestDialog
+                suggestionDialogOpen={suggestionDialogOpen}
+                setSuggestionDialogOpen={setSuggestionDialogOpen}
+                suggestionCreation={suggestionCreation}
+                setSuggestionCreation={setSuggestionCreation}
+                handleSubmit={handleSubmit}
+                categories={categories}
+                locale={locale}
+                suggestionSubmitting={suggestionSubmitting}
+            />
         </>
     );
 }

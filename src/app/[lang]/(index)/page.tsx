@@ -1,6 +1,6 @@
 
-import ClientAction from '@/components/custom-ui/ClientAction';
-import { LocaleType } from './getDictionary';
+import ClientAction from '@/app/[lang]/(index)/ClientAction';
+import { LocaleType } from '../getDictionary';
 import { getCategories } from '@/lib/db/queries/getCategories';
 
 export const revalidate = 3600;

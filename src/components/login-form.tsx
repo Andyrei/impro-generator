@@ -13,8 +13,7 @@ export async function LoginForm({
 }: React.ComponentPropsWithoutRef<"form">) {
 
   if (await auth().then(user => !!user)) {
-    // If the user is already authenticated, you can choose to redirect them or show a message
-    return redirect("/admin") // Redirect to home page or dashboard
+    return redirect("/admin")
   }
   return (
     <form className={cn("flex flex-col gap-6", className)} {...props}>
