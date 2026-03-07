@@ -79,3 +79,5 @@ export const config = {
         '/((?!api|admin|_next/static|_next/image|favicon.ico|og-image|twitter-image|sitemap.xml|robots.txt).*)',
     ]
 }
+
+export { auth as middleware } from "@/app/auth";
