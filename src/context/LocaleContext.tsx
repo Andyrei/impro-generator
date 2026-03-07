@@ -22,8 +22,9 @@ return (
 */
 
 import { getDictionary, LocaleType } from '@/app/[lang]/getDictionary'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
 
 interface LocaleContextType {
     locale: LocaleType
@@ -65,6 +66,8 @@ export const LocaleProvider: React.FC<LocaleProviderProps> = ({ children, initia
     const [locale, setLocale] = useState<LocaleType>(initialLocale)
     const [dictionary, setDictionary] = useState<Record<string, any>>({})
     const [isLoading, setIsLoading] = useState(true)
+    const { data: session } = useSession()
+    const initialSyncDone = useRef(false)
 
     const router = useRouter()
 
@@ -72,6 +75,30 @@ export const LocaleProvider: React.FC<LocaleProviderProps> = ({ children, initia
         const storedLocale = getStoredLocale()
         setLocale(storedLocale)
     }, [])
+
+    // when user logs in, fetch their language setting from DB
+    useEffect(() => {
+        if (!session?.user || initialSyncDone.current) return
+        initialSyncDone.current = true
+        fetch('/api/v1/settings')
+            .then((r) => r.ok ? r.json() : null)
+            .then((data) => {
+                if (!data?.settings?.language) return
+                const lang = data.settings.language as LocaleType
+                if (lang === locale) return // already on the right locale, no navigation needed
+                document.cookie = `locale=${lang}; path=/; max-age=31536000`
+                setLocale(lang)
+                // only navigate if the current path actually has a locale segment (e.g. /it/...)
+                const currentPath = window.location.pathname
+                const localeSegment = currentPath.match(/^\/([a-z]{2})(\/|$)/)
+                if (localeSegment) {
+                    const newPath = currentPath.replace(/^\/[a-z]{2}(\/|$)/, `/${lang}$1`)
+                    router.push(newPath)
+                }
+            })
+            .catch(() => {})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [session])
 
 
     useEffect(() => {
@@ -100,6 +127,14 @@ export const LocaleProvider: React.FC<LocaleProviderProps> = ({ children, initia
     const handleSetLocale = (newLocale: LocaleType) => {
         document.cookie = `locale=${newLocale}; path=/; max-age=31536000` // 1 year
         setLocale(newLocale)
+
+        if (session?.user) {
+            fetch('/api/v1/settings', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ language: newLocale }),
+            }).catch(() => {})
+        }
 
         // Update the URL path
         const currentPath = window.location.pathname

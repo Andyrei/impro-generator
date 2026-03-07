@@ -5,8 +5,10 @@ import React, {
   useContext,
   useState,
   useEffect,
+  useRef,
   ReactNode,
 } from 'react';
+import { useSession } from 'next-auth/react';
 
 /**
  * shape of the context value exposed by the provider
@@ -56,15 +58,62 @@ interface ThemeProviderProps {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [themeSettings, setThemeSettings] = useState<ThemeContextProps['themeSettings']>(defaultThemeContext.themeSettings);
+  const { data: session } = useSession();
+  const syncDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const initialSyncDone = useRef(false);
 
-  // on first mount restore the saved theme choice
+  // on first mount: restore from localStorage, then override with DB if logged in
   useEffect(() => {
     const saved = localStorage.getItem('themeChoice') as 'light' | 'dark' | 'system' | null;
     setThemeSettings((prev) => ({ ...prev, theme: saved ?? 'system' }));
 
+    const stopwatchFormat = localStorage.getItem('stopwatchTimeFormat');
+    const preventSleep = localStorage.getItem('stopwatchPreventSleep');
+    if (stopwatchFormat) setThemeSettings((prev) => ({ ...prev, stopwatchTimeFormat: stopwatchFormat }));
+    if (preventSleep) setThemeSettings((prev) => ({ ...prev, stopwatchPreventSleep: preventSleep === 'true' }));
+
     const timer = setTimeout(() => setIsLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
+
+  // when user logs in, fetch their settings from DB and merge
+  useEffect(() => {
+    if (!session?.user || initialSyncDone.current) return;
+    initialSyncDone.current = true;
+    fetch('/api/v1/settings')
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (!data?.settings) return;
+        const s = data.settings;
+        setThemeSettings((prev) => ({
+          ...prev,
+          ...(s.theme ? { theme: s.theme } : {}),
+          ...(s.stopwatchTimeFormat ? { stopwatchTimeFormat: s.stopwatchTimeFormat } : {}),
+          ...(s.stopwatchPreventSleep != null ? { stopwatchPreventSleep: s.stopwatchPreventSleep } : {}),
+        }));
+      })
+      .catch(() => {});
+  }, [session]);
+
+  // whenever settings change: persist to localStorage and DB (debounced)
+  const handleSetThemeSettings = (settings: ThemeContextProps['themeSettings']) => {
+    setThemeSettings(settings);
+    localStorage.setItem('stopwatchTimeFormat', settings.stopwatchTimeFormat);
+    localStorage.setItem('stopwatchPreventSleep', String(settings.stopwatchPreventSleep));
+    if (session?.user) {
+      if (syncDebounceRef.current) clearTimeout(syncDebounceRef.current);
+      syncDebounceRef.current = setTimeout(() => {
+        fetch('/api/v1/settings', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            stopwatchTimeFormat: settings.stopwatchTimeFormat,
+            stopwatchPreventSleep: settings.stopwatchPreventSleep,
+          }),
+        }).catch(() => {});
+      }, 500);
+    }
+  };
 
   // whenever theme changes: apply the correct class and listen for system changes
   useEffect(() => {
@@ -86,10 +135,17 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   }, [themeSettings.theme]);
 
   const toggleDarkMode = () => {
-    setThemeSettings((prev) => ({
-      ...prev,
-      theme: prev.theme === 'dark' ? 'light' : 'dark',
-    }));
+    setThemeSettings((prev) => {
+      const next = { ...prev, theme: prev.theme === 'dark' ? 'light' : 'dark' } as ThemeContextProps['themeSettings'];
+      if (session?.user) {
+        fetch('/api/v1/settings', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ theme: next.theme }),
+        }).catch(() => {});
+      }
+      return next;
+    });
   };
 
   return (
@@ -97,7 +153,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       value={{
         isLoading,
         themeSettings,
-        setThemeSettings,
+        setThemeSettings: handleSetThemeSettings,
         toggleDarkMode,
         setIsLoading,
       }}
