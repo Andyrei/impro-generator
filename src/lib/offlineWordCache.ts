@@ -19,8 +19,8 @@ export async function prefetchAllWords(
   const cache = await caches.open(CACHE_NAME);
 
   for (const cat of categories) {
-    for (const level of ["1", "2", "3"]) {
-      const url = `/api/v1/words?action=${cat._id}&level=${level}&limit=200`;
+    for (const level of ["easy", "medium", "hard"]) {
+      const url = `/api/v1/words?action=${cat._id}&level=${level}&limit=1000`;
       try {
         const response = await fetch(url);
         if (response.ok) {

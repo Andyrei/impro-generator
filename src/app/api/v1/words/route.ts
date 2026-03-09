@@ -9,8 +9,11 @@ import { rateLimit, getClientIp } from '@/lib/rateLimit';
 // Accepts 'easy'|'medium'|'hard' directly, or legacy numeric '1'|'2'|'3'
 const LEVEL_ALIAS: Record<string, Difficulty> = {
   easy: 'easy', medium: 'medium', hard: 'hard',
+  '1': 'easy', '2': 'medium', '3': 'hard',
 };
 
+
+//  api/v1/words?level=easy&action=123&page=2&limit=50&sort=word.it&sortDir=asc
 export async function GET(req: NextRequest) {
   const { ok, retryAfter } = rateLimit(getClientIp(req));
   if (!ok) {

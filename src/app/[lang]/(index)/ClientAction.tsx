@@ -84,7 +84,7 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
                 : '';
 
             let response = await fetch(
-                `./api/v1/words?level=${level}&action=${action}&sample=1${excludeParam}`
+                `/api/v1/words?level=${level}&action=${action}&sample=1${excludeParam}`
             );
             if (response.status === 429) {
                 const retryAfter = parseInt(response.headers.get('Retry-After') ?? '30', 10);
@@ -97,7 +97,7 @@ export default function ClientAction({categories}: {categories: ICategory[]}) {
             // All words for this category+level have been shown — reset history and retry
             if (!data.data?.length && excludeSet.size > 0) {
                 response = await fetch(
-                    `./api/v1/words?level=${level}&action=${action}&sample=1`
+                    `/api/v1/words?level=${level}&action=${action}&sample=1`
                 );
                 if (response.status === 429) {
                     const retryAfter = parseInt(response.headers.get('Retry-After') ?? '30', 10);
