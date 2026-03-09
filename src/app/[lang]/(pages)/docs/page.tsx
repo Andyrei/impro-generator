@@ -144,13 +144,13 @@ export default function DocsPage() {
         <section className="mb-10 bg-muted/50 rounded-xl">
             <h2 className="text-lg font-bold mb-2">Consiglio rapido</h2>
             <p className="text-zinc-300 text-sm leading-relaxed">
-            Chiediti: <em>&ldquo;Quante persone hanno vissuto direttamente questa situazione?&rdquo;</em>{" "}
+                Chiediti: <em>&ldquo;Quante persone hanno vissuto direttamente questa situazione?&rdquo;</em>
+            </p>
             <ul className="list-disc list-inside mt-2 mb-0 text-zinc-300">
                 <li><em>quasi tutti</em> → <strong className="text-green-500">Facile</strong></li>
                 <li><em>qualcuno</em> → <strong className="text-yellow-500">Medio</strong></li>
                 <li><em>pochissimi o nessuno</em> → <strong className="text-red-500">Difficile</strong></li>
             </ul>
-            </p>
         </section>
 
         {/* ── Footer ── */}
