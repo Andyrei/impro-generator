@@ -17,7 +17,11 @@ if (!cached) {
 export async function connectDB(): Promise<typeof mongoose> {
   if (cached.conn) return cached.conn;
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGO_URI).then((m) => m);
+    cached.promise = mongoose.connect(MONGO_URI).then((m) => m).catch((err) => {
+      // Reset so the next request can attempt a fresh connection
+      cached.promise = null;
+      throw err;
+    });
   }
   cached.conn = await cached.promise;
   return cached.conn;
