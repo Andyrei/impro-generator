@@ -15,10 +15,18 @@ if (!cached) {
 
 
 export async function connectDB(): Promise<typeof mongoose> {
-  if (cached.conn) return cached.conn;
+  // Fast path: existing connection is healthy
+  if (cached.conn && mongoose.connection.readyState === 1) return cached.conn;
+
+  // Stale path: conn object exists but socket is gone (dropped by Atlas / idle timeout)
+  if (mongoose.connection.readyState !== 1 && mongoose.connection.readyState !== 2) {
+    cached.conn = null;
+    cached.promise = null;
+  }
+
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGO_URI).then((m) => m).catch((err) => {
-      // Reset so the next request can attempt a fresh connection
+      cached.conn = null;
       cached.promise = null;
       throw err;
     });
