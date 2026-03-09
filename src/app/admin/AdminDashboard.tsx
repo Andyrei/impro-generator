@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { ICategory } from "@/lib/db/types/category";
 import { Difficulty, IWord } from "@/lib/db/types/word";
 import { WordsDataTable } from "@/components/words_table/WordsDataTable";
@@ -210,6 +210,8 @@ function DeleteWordDialog({
 
 // ─── Category Accordion Section ───────────────────────────────────────────────
 
+const PAGE_SIZE = 50;
+
 function CategorySection({
   category,
   categories,
@@ -223,36 +225,69 @@ function CategorySection({
   const [fetched, setFetched] = useState(false);
   const [editTarget, setEditTarget] = useState<IWord | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<IWord | null>(null);
+  const [tableLoading, setTableLoading] = useState(false);
 
-  const fetchWords = useCallback(async () => {
-    setLoading(true);
+  // Server-side pagination & filter state
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [difficulty, setDifficulty] = useState('all');
+  const [search, setSearch] = useState('');
+  const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const doFetch = useCallback(async (p: number, d: string, s: string, initial = false) => {
+    initial ? setLoading(true) : setTableLoading(true);
     try {
-      const res = await fetch(`/api/v1/words?action=${category._id}`);
+      const params = new URLSearchParams({ action: category._id, page: String(p), limit: String(PAGE_SIZE) });
+      if (d !== 'all') params.set('level', d);
+      if (s) params.set('search', s);
+      const res = await fetch(`/api/v1/words?${params}`);
       const json = await res.json();
       const raw: any[] = json.data ?? [];
       const mapped: IWord[] = raw.map((w) => ({
         ...w,
-        _id: w._id,
         word: w.word instanceof Map ? Object.fromEntries(w.word) : w.word,
       }));
       setWords(mapped);
+      setTotal(json.metadata?.total ?? 0);
+      setPageCount(json.metadata?.pages ?? 1);
       setFetched(true);
     } catch {
-      toast.error("Errore nel caricamento delle parole");
+      toast.error('Errore nel caricamento delle parole');
     } finally {
-      setLoading(false);
+      initial ? setLoading(false) : setTableLoading(false);
     }
   }, [category._id]);
 
   const handleToggle = () => {
     setOpen((o) => {
-      if (!o && !fetched) fetchWords();
+      if (!o && !fetched) doFetch(1, 'all', '', true);
       return !o;
     });
   };
 
+  const handleDifficultyChange = (val: string) => {
+    setDifficulty(val);
+    setPage(1);
+    doFetch(1, val, search);
+  };
+
+  const handleSearchChange = (val: string) => {
+    setSearch(val);
+    clearTimeout(searchTimeout.current);
+    searchTimeout.current = setTimeout(() => {
+      setPage(1);
+      doFetch(1, difficulty, val);
+    }, 400);
+  };
+
+  const handlePageChange = (p: number) => {
+    setPage(p);
+    doFetch(p, difficulty, search);
+  };
+
   const columns = wordColumns({
-    locale: "it",
+    locale: 'it',
     onEdit: setEditTarget,
     onDelete: setDeleteTarget,
   });
@@ -282,7 +317,21 @@ function CategorySection({
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
           ) : (
-            <WordsDataTable columns={columns} data={words} />
+            <WordsDataTable
+              columns={columns}
+              data={words}
+              server={{
+                total,
+                page,
+                pageCount,
+                onPageChange: handlePageChange,
+                difficulty,
+                onDifficultyChange: handleDifficultyChange,
+                search,
+                onSearchChange: handleSearchChange,
+                loading: tableLoading,
+              }}
+            />
           )}
         </div>
       )}
@@ -298,6 +347,7 @@ function CategorySection({
               prev.map((w) => (String((w as any)._id) === String((updated as any)._id) ? updated : w))
             );
             setEditTarget(null);
+            doFetch(page, difficulty, search);
           }}
         />
       )}
@@ -308,6 +358,7 @@ function CategorySection({
           onDeleted={(id) => {
             setWords((prev) => prev.filter((w) => String((w as any)._id) !== id));
             setDeleteTarget(null);
+            doFetch(page, difficulty, search);
           }}
         />
       )}
