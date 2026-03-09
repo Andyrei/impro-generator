@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { ICategory } from "@/lib/db/types/category";
-import { IWord } from "@/lib/db/types/word";
+import { Difficulty, IWord } from "@/lib/db/types/word";
 import { WordsDataTable } from "@/components/words_table/WordsDataTable";
 import { wordColumns } from "@/components/words_table/columns";
 import { Button } from "@/components/ui/button";
@@ -61,7 +61,7 @@ function EditWordDialog({
     it: (word.word as any).it ?? "",
     en: (word.word as any).en ?? "",
     ro: (word.word as any).ro ?? "",
-    difficulty: String(word.difficulty) as "easy" | "medium" | "hard",
+    difficulty: String(word.difficulty) as Difficulty,
     category: String(word.category),
   });
 
@@ -114,7 +114,7 @@ function EditWordDialog({
             <Label className="text-right text-xs">Difficoltà</Label>
             <Select
               value={fields.difficulty}
-              onValueChange={(v: "easy" | "medium" | "hard") => setFields((p) => ({ ...p, difficulty: v }))}
+              onValueChange={(v: Difficulty) => setFields((p) => ({ ...p, difficulty: v }))}
             >
               <SelectTrigger className="col-span-3">
                 <SelectValue />
@@ -130,7 +130,7 @@ function EditWordDialog({
             <Label className="text-right text-xs">Categoria</Label>
             <Select
               value={fields.category}
-              onValueChange={(v) => setFields((p) => ({ ...p, category: v }))}
+              onValueChange={(v: string) => setFields((p) => ({ ...p, category: v }))}
             >
               <SelectTrigger className="col-span-3">
                 <SelectValue />
