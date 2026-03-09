@@ -20,7 +20,7 @@ export async function prefetchAllWords(
 
   for (const cat of categories) {
     for (const level of ["easy", "medium", "hard"]) {
-      const url = `/api/v1/words?action=${cat._id}&level=${level}&limit=1000`;
+      const url = `/api/v1/words?action=${cat._id}&level=${level}&limit=300`;
       try {
         const response = await fetch(url);
         if (response.ok) {
