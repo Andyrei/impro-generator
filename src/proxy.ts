@@ -9,7 +9,8 @@ import { auth } from '@/app/auth'
 const ALLOWED_ORIGIN = process.env.NODE_ENV === 'production' ? process.env.NEXTAUTH_URL : 'http://localhost:3000'
 
 const defaultLocale = 'it'
-const locales = ['it', 'ro', 'en']
+// const locales = ['it', 'ro', 'en']
+const locales = ['it']
 
 function getLocale(request: NextRequest) {
     // 1. Check URL (Already doing this)

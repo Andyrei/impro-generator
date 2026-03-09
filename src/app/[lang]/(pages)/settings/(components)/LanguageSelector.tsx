@@ -21,6 +21,7 @@ import { languages } from "@/app/[lang]/getDictionary"
 export default function LanguageSelector() {
 
 const { locale, setLocale } = useLocale()
+
   return (
     <React.Fragment>
       <div className="hidden md:block">
@@ -37,7 +38,7 @@ const { locale, setLocale } = useLocale()
             <DropdownMenuItem
               key={language.code}
               className="flex items-center justify-between"
-              onClick={() => setLocale(language.code)}
+              // onClick={() => setLocale(language.code)}
             >
               <span>{language.title}</span>
               {locale === language.code && <CheckIcon className="h-5 w-5" />}

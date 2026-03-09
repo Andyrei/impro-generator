@@ -1,17 +1,23 @@
 export type LocaleType = keyof typeof dictionaries;
 
+// export const languages = [
+//     {
+//         code: 'en',
+//         title: 'English'
+//     },
+//     {
+//         code: 'it',
+//         title: "Italian"
+//     },
+//     {
+//         code: 'ro',
+//         title: 'Romanian'
+//     }
+// ]
 export const languages = [
-    {
-        code: 'en',
-        title: 'English'
-    },
     {
         code: 'it',
         title: "Italian"
-    },
-    {
-        code: 'ro',
-        title: 'Romanian'
     }
 ]
 
