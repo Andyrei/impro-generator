@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { IWord } from "@/lib/db/types/word";
+import { Difficulty, IWord } from "@/lib/db/types/word";
 import {
   Select,
   SelectContent,
@@ -54,10 +54,11 @@ export function WordsDataTable({ columns, data }: WordsDataTableProps) {
     initialState: { pagination: { pageSize: 50 } },
     filterFns: {
       difficultyRange: (row, columnId, filterValue) => {
-        const d = row.getValue(columnId) as number
-        if (filterValue === "easy")   return d <= 33
-        if (filterValue === "medium") return d > 33 && d <= 66
-        if (filterValue === "hard")   return d > 66
+        const d = row.getValue(columnId) as Difficulty;
+        if (filterValue === "easy") return d === "easy";
+        if (filterValue === "medium") return d === "medium";
+        if (filterValue === "hard") return d === "hard";
+        
         return true
       },
     },
