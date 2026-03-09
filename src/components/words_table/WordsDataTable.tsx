@@ -42,6 +42,9 @@ interface ServerProps {
   onDifficultyChange: (val: string) => void
   search: string
   onSearchChange: (val: string) => void
+  sort: string
+  sortDir: 'asc' | 'desc'
+  onSortChange: (sort: string, sortDir: 'asc' | 'desc') => void
   loading?: boolean
 }
 
@@ -60,6 +63,10 @@ export function WordsDataTable({ columns, data, server }: WordsDataTableProps) {
     ? { pageIndex: server.page - 1, pageSize: 50 }
     : pagination
 
+  const activeSorting: SortingState = server
+    ? (server.sort ? [{ id: server.sort === 'word.it' ? 'word' : 'difficulty', desc: server.sortDir === 'desc' }] : [])
+    : sorting
+
   const table = useReactTable({
     data,
     columns,
@@ -67,11 +74,20 @@ export function WordsDataTable({ columns, data, server }: WordsDataTableProps) {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    onSortingChange: setSorting,
+    onSortingChange: server
+      ? (updater) => {
+          const next = typeof updater === 'function' ? updater(activeSorting) : updater;
+          if (next.length === 0) return;
+          const col = next[0];
+          const apiField = col.id === 'difficulty' ? 'difficulty' : 'word.it';
+          server.onSortChange(apiField, col.desc ? 'desc' : 'asc');
+        }
+      : setSorting,
     onColumnFiltersChange: setColumnFilters,
-    state: { sorting, columnFilters, pagination: activePagination },
+    state: { sorting: activeSorting, columnFilters, pagination: activePagination },
     manualPagination: !!server,
     manualFiltering: !!server,
+    manualSorting: !!server,
     pageCount: server?.pageCount,
     onPaginationChange: server
       ? (updater) => {

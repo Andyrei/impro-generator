@@ -233,14 +233,18 @@ function CategorySection({
   const [total, setTotal] = useState(0);
   const [difficulty, setDifficulty] = useState('all');
   const [search, setSearch] = useState('');
+  const [sort, setSort] = useState('word.it');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const doFetch = useCallback(async (p: number, d: string, s: string, initial = false) => {
+  const doFetch = useCallback(async (p: number, d: string, s: string, so = 'word.it', sd: 'asc' | 'desc' = 'asc', initial = false) => {
     initial ? setLoading(true) : setTableLoading(true);
     try {
       const params = new URLSearchParams({ action: category._id, page: String(p), limit: String(PAGE_SIZE) });
       if (d !== 'all') params.set('level', d);
       if (s) params.set('search', s);
+      params.set('sort', so);
+      params.set('sortDir', sd);
       const res = await fetch(`/api/v1/words?${params}`);
       const json = await res.json();
       const raw: any[] = json.data ?? [];
@@ -261,7 +265,7 @@ function CategorySection({
 
   const handleToggle = () => {
     setOpen((o) => {
-      if (!o && !fetched) doFetch(1, 'all', '', true);
+      if (!o && !fetched) doFetch(1, 'all', '', 'word.it', 'asc', true);
       return !o;
     });
   };
@@ -269,7 +273,7 @@ function CategorySection({
   const handleDifficultyChange = (val: string) => {
     setDifficulty(val);
     setPage(1);
-    doFetch(1, val, search);
+    doFetch(1, val, search, sort, sortDir);
   };
 
   const handleSearchChange = (val: string) => {
@@ -277,13 +281,20 @@ function CategorySection({
     clearTimeout(searchTimeout.current);
     searchTimeout.current = setTimeout(() => {
       setPage(1);
-      doFetch(1, difficulty, val);
+      doFetch(1, difficulty, val, sort, sortDir);
     }, 400);
   };
 
   const handlePageChange = (p: number) => {
     setPage(p);
-    doFetch(p, difficulty, search);
+    doFetch(p, difficulty, search, sort, sortDir);
+  };
+
+  const handleSortChange = (so: string, sd: 'asc' | 'desc') => {
+    setSort(so);
+    setSortDir(sd);
+    setPage(1);
+    doFetch(1, difficulty, search, so, sd);
   };
 
   const columns = wordColumns({
@@ -329,6 +340,9 @@ function CategorySection({
                 onDifficultyChange: handleDifficultyChange,
                 search,
                 onSearchChange: handleSearchChange,
+                sort,
+                sortDir,
+                onSortChange: handleSortChange,
                 loading: tableLoading,
               }}
             />
@@ -347,7 +361,7 @@ function CategorySection({
               prev.map((w) => (String((w as any)._id) === String((updated as any)._id) ? updated : w))
             );
             setEditTarget(null);
-            doFetch(page, difficulty, search);
+            doFetch(page, difficulty, search, sort, sortDir);
           }}
         />
       )}
@@ -358,7 +372,7 @@ function CategorySection({
           onDeleted={(id) => {
             setWords((prev) => prev.filter((w) => String((w as any)._id) !== id));
             setDeleteTarget(null);
-            doFetch(page, difficulty, search);
+            doFetch(page, difficulty, search, sort, sortDir);
           }}
         />
       )}

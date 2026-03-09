@@ -40,14 +40,18 @@ export default function ActionButton({
   const [total, setTotal] = useState(0);
   const [difficulty, setDifficulty] = useState('all');
   const [search, setSearch] = useState('');
+  const [sort, setSort] = useState('word.it');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const doFetch = useCallback(async (p: number, d: string, s: string) => {
+  const doFetch = useCallback(async (p: number, d: string, s: string, so = 'word.it', sd: 'asc' | 'desc' = 'asc') => {
     setTableLoading(true);
     try {
       const params = new URLSearchParams({ action, page: String(p), limit: String(PAGE_SIZE) });
       if (d !== 'all') params.set('level', d);
       if (s) params.set('search', s);
+      params.set('sort', so);
+      params.set('sortDir', sd);
       const res = await fetch(`/api/v1/words?${params}`);
       if (!res.ok) throw new Error('Failed to fetch');
       const json = await res.json();
@@ -66,14 +70,16 @@ export default function ActionButton({
     setPage(1);
     setDifficulty('all');
     setSearch('');
-    await doFetch(1, 'all', '');
+    setSort('word.it');
+    setSortDir('asc');
+    await doFetch(1, 'all', '', 'word.it', 'asc');
     setLoading(false);
   };
 
   const handleDifficultyChange = (val: string) => {
     setDifficulty(val);
     setPage(1);
-    doFetch(1, val, search);
+    doFetch(1, val, search, sort, sortDir);
   };
 
   const handleSearchChange = (val: string) => {
@@ -81,13 +87,20 @@ export default function ActionButton({
     clearTimeout(searchTimeout.current);
     searchTimeout.current = setTimeout(() => {
       setPage(1);
-      doFetch(1, difficulty, val);
+      doFetch(1, difficulty, val, sort, sortDir);
     }, 400);
   };
 
   const handlePageChange = (p: number) => {
     setPage(p);
-    doFetch(p, difficulty, search);
+    doFetch(p, difficulty, search, sort, sortDir);
+  };
+
+  const handleSortChange = (so: string, sd: 'asc' | 'desc') => {
+    setSort(so);
+    setSortDir(sd);
+    setPage(1);
+    doFetch(1, difficulty, search, so, sd);
   };
 
   const handlers = useLongPress(
@@ -130,6 +143,9 @@ export default function ActionButton({
                   onDifficultyChange: handleDifficultyChange,
                   search,
                   onSearchChange: handleSearchChange,
+                  sort,
+                  sortDir,
+                  onSortChange: handleSortChange,
                   loading: tableLoading,
                 }}
               />

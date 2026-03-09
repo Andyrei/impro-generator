@@ -44,6 +44,12 @@ export const wordColumns = (localeOrOptions: string | WordColumnsOptions): Colum
     {
       accessorKey: "difficulty",
       filterFn: "difficultyRange" as any,
+      sortingFn: (rowA, rowB) => {
+        const order: Record<string, number> = { easy: 1, medium: 2, hard: 3 };
+        const a = order[rowA.getValue("difficulty") as string] ?? 0;
+        const b = order[rowB.getValue("difficulty") as string] ?? 0;
+        return a - b;
+      },
       header: ({ column }) => (
         <Button
           variant="ghost"

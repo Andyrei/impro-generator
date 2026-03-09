@@ -92,8 +92,37 @@ export async function GET(req: NextRequest) {
     if (pageParam !== null) {
       const page = Math.max(1, parseInt(pageParam) || 1);
       const skip = (page - 1) * pageSize;
+
+      // Sorting — ?sort=word.it|difficulty  ?sortDir=asc|desc
+      const sortField = req.nextUrl.searchParams.get('sort') ?? 'word.it';
+      const sortDir   = req.nextUrl.searchParams.get('sortDir') === 'desc' ? -1 : 1;
+      const allowedSortFields = ['word.it', 'word.en', 'word.ro', 'difficulty'];
+      const mongoSort: Record<string, 1 | -1> = {};
+      if (sortField === 'difficulty') {
+        // Sort by logical order using aggregation
+        const diffOrder = { $switch: { branches: [
+          { case: { $eq: ['$difficulty', 'easy']   }, then: 1 },
+          { case: { $eq: ['$difficulty', 'medium'] }, then: 2 },
+          { case: { $eq: ['$difficulty', 'hard']   }, then: 3 },
+        ], default: 0 } };
+        const [words, total] = await Promise.all([
+          Word.aggregate([
+            { $match: query },
+            { $addFields: { _diffOrder: diffOrder } },
+            { $sort: { _diffOrder: sortDir } },
+            { $skip: skip },
+            { $limit: pageSize },
+          ]),
+          Word.countDocuments(query),
+        ]);
+        return NextResponse.json(
+          { metadata: { total, page, pageSize, pages: Math.ceil(total / pageSize) }, data: words },
+          { status: 200, headers: { 'Cache-Control': 'no-store' } }
+        );
+      }
+      mongoSort[allowedSortFields.includes(sortField) ? sortField : 'word.it'] = sortDir;
       const [words, total] = await Promise.all([
-        Word.find(query).skip(skip).limit(pageSize),
+        Word.find(query).sort(mongoSort).skip(skip).limit(pageSize),
         Word.countDocuments(query),
       ]);
       return NextResponse.json(
