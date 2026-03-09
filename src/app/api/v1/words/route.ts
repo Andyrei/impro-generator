@@ -8,7 +8,6 @@ import { rateLimit, getClientIp } from '@/lib/rateLimit';
 
 // Accepts 'easy'|'medium'|'hard' directly, or legacy numeric '1'|'2'|'3'
 const LEVEL_ALIAS: Record<string, Difficulty> = {
-  '1': 'easy', '2': 'medium', '3': 'hard',
   easy: 'easy', medium: 'medium', hard: 'hard',
 };
 
@@ -49,7 +48,20 @@ export async function GET(req: NextRequest) {
     if (actionParam !== 'all') {
       query.category = new mongoose.Types.ObjectId(actionParam);
     }
-    if (difficulty) query.difficulty = difficulty;
+    if (difficulty) {
+      // Support both string ('easy'/'medium'/'hard') and legacy numeric values in DB
+      (query as any).$or = [{ difficulty }, { difficulty: Object.keys(LEVEL_ALIAS).find(key => LEVEL_ALIAS[key] === difficulty) }];
+    }
+
+    // Optional keyword search across all language fields
+    const searchParam = req.nextUrl.searchParams.get('search');
+    if (searchParam) {
+      const re = { $regex: searchParam, $options: 'i' };
+      (query as any).$and = [
+        ...((query as any).$and ?? []),
+        { $or: [{ 'word.it': re }, { 'word.en': re }] },
+      ];
+    }
 
     const sampleParam = req.nextUrl.searchParams.get('sample');
     if (sampleParam === '1') {
@@ -73,8 +85,25 @@ export async function GET(req: NextRequest) {
     }
 
     const limitParam = req.nextUrl.searchParams.get('limit');
-    const limit = limitParam ? Math.min(Math.max(parseInt(limitParam) || 50, 1), 200) : null;
+    const pageParam  = req.nextUrl.searchParams.get('page');
+    const pageSize   = Math.min(Math.max(parseInt(limitParam || '50') || 50, 1), 200);
 
+    // Paginated path — used by the browse/admin table
+    if (pageParam !== null) {
+      const page = Math.max(1, parseInt(pageParam) || 1);
+      const skip = (page - 1) * pageSize;
+      const [words, total] = await Promise.all([
+        Word.find(query).skip(skip).limit(pageSize),
+        Word.countDocuments(query),
+      ]);
+      return NextResponse.json(
+        { metadata: { total, page, pageSize, pages: Math.ceil(total / pageSize) }, data: words },
+        { status: 200, headers: { 'Cache-Control': 'no-store' } }
+      );
+    }
+
+    // Non-paginated path — kept for backwards compatibility
+    const limit = limitParam ? pageSize : null;
     const words = limit
       ? await Word.find(query).limit(limit)
       : await Word.find(query);

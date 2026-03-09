@@ -1,12 +1,14 @@
 'use client'
 import { useLocale } from '@/context/LocaleContext';
 import { useLongPress } from '@/hooks/useLongPress';
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader } from '../ui/dialog';
 import { DialogClose, DialogTitle } from '@radix-ui/react-dialog';
 import { WordsDataTable } from '../words_table/WordsDataTable';
 import { wordColumns } from '../words_table/columns';
 import { Button } from '../ui/button';
+
+const PAGE_SIZE = 50;
 
 type Props = {
     action: string
@@ -30,30 +32,69 @@ export default function ActionButton({
   const { dictionary: intl, locale } = useLocale();
   const [openDialog, setOpenDialog] = useState(false);
   const [words, setWords] = useState<any[]>([]);
+  const [tableLoading, setTableLoading] = useState(false);
 
+  // Server-side pagination & filter state
+  const [page, setPage] = useState(1);
+  const [pageCount, setPageCount] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [difficulty, setDifficulty] = useState('all');
+  const [search, setSearch] = useState('');
+  const searchTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  const fetchWords = async () => {
-    setLoading(true);
-    setOpenDialog(true);
+  const doFetch = useCallback(async (p: number, d: string, s: string) => {
+    setTableLoading(true);
     try {
-      // Fetch all difficulties (1-3 covers easy/med/hard) or use a dedicated endpoint
-      const res = await fetch(`/api/v1/words?action=${action}`);
-      if (!res.ok) throw new Error("Failed to fetch");
-      const data = await res.json();
-      setWords(data.data ?? []);
+      const params = new URLSearchParams({ action, page: String(p), limit: String(PAGE_SIZE) });
+      if (d !== 'all') params.set('level', d);
+      if (s) params.set('search', s);
+      const res = await fetch(`/api/v1/words?${params}`);
+      if (!res.ok) throw new Error('Failed to fetch');
+      const json = await res.json();
+      setWords(json.data ?? []);
+      setTotal(json.metadata?.total ?? 0);
+      setPageCount(json.metadata?.pages ?? 1);
     } catch (e) {
       console.error(e);
     }
+    setTableLoading(false);
+  }, [action]);
+
+  const openTable = async () => {
+    setLoading(true);
+    setOpenDialog(true);
+    setPage(1);
+    setDifficulty('all');
+    setSearch('');
+    await doFetch(1, 'all', '');
     setLoading(false);
   };
 
+  const handleDifficultyChange = (val: string) => {
+    setDifficulty(val);
+    setPage(1);
+    doFetch(1, val, search);
+  };
+
+  const handleSearchChange = (val: string) => {
+    setSearch(val);
+    clearTimeout(searchTimeout.current);
+    searchTimeout.current = setTimeout(() => {
+      setPage(1);
+      doFetch(1, difficulty, val);
+    }, 400);
+  };
+
+  const handlePageChange = (p: number) => {
+    setPage(p);
+    doFetch(p, difficulty, search);
+  };
+
   const handlers = useLongPress(
-    fetchWords,
+    openTable,
     () => handleShowChoosenAction(action),
     600
   );
-
-
 
   return (
     <>
@@ -80,6 +121,17 @@ export default function ActionButton({
               <WordsDataTable
                 columns={wordColumns(locale.toString())}
                 data={words}
+                server={{
+                  total,
+                  page,
+                  pageCount,
+                  onPageChange: handlePageChange,
+                  difficulty,
+                  onDifficultyChange: handleDifficultyChange,
+                  search,
+                  onSearchChange: handleSearchChange,
+                  loading: tableLoading,
+                }}
               />
             )}
             <DialogFooter>

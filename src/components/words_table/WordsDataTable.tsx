@@ -11,6 +11,7 @@ import {
   useReactTable,
   getFilteredRowModel,
   ColumnFiltersState,
+  PaginationState,
 } from "@tanstack/react-table"
 import {
   Table,
@@ -22,7 +23,7 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Difficulty, IWord } from "@/lib/db/types/word";
+import { IWord } from "@/lib/db/types/word";
 import {
   Select,
   SelectContent,
@@ -32,14 +33,32 @@ import {
 } from "@/components/ui/select"
 
 
+interface ServerProps {
+  total: number
+  page: number
+  pageCount: number
+  onPageChange: (page: number) => void
+  difficulty: string
+  onDifficultyChange: (val: string) => void
+  search: string
+  onSearchChange: (val: string) => void
+  loading?: boolean
+}
+
 interface WordsDataTableProps {
   columns: ColumnDef<IWord, any>[]
   data: IWord[]
+  server?: ServerProps
 }
 
-export function WordsDataTable({ columns, data }: WordsDataTableProps) {
+export function WordsDataTable({ columns, data, server }: WordsDataTableProps) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [pagination, setPagination] = React.useState<PaginationState>({ pageIndex: 0, pageSize: 50 })
+
+  const activePagination = server
+    ? { pageIndex: server.page - 1, pageSize: 50 }
+    : pagination
 
   const table = useReactTable({
     data,
@@ -50,19 +69,51 @@ export function WordsDataTable({ columns, data }: WordsDataTableProps) {
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    state: { sorting, columnFilters },
-    initialState: { pagination: { pageSize: 50 } },
+    state: { sorting, columnFilters, pagination: activePagination },
+    manualPagination: !!server,
+    manualFiltering: !!server,
+    pageCount: server?.pageCount,
+    onPaginationChange: server
+      ? (updater) => {
+          const next = typeof updater === 'function' ? updater(activePagination) : updater;
+          server.onPageChange(next.pageIndex + 1);
+        }
+      : setPagination,
     filterFns: {
       difficultyRange: (row, columnId, filterValue) => {
-        const d = row.getValue(columnId) as Difficulty;
-        if (filterValue === "easy") return d === "easy";
-        if (filterValue === "medium") return d === "medium";
-        if (filterValue === "hard") return d === "hard";
-        
-        return true
+        const d = row.getValue(columnId) as any;
+        // Handle both string ('easy'/'medium'/'hard') and legacy numeric values
+        if (typeof d === 'string') return d === filterValue;
+        if (filterValue === 'easy')   return d <= 33;
+        if (filterValue === 'medium') return d > 33 && d <= 66;
+        return d > 66;
       },
     },
   })
+
+  const searchVal = server
+    ? server.search
+    : ((table.getColumn("word")?.getFilterValue() as string) ?? "")
+
+  const difficultyVal = server
+    ? server.difficulty
+    : ((table.getColumn("difficulty")?.getFilterValue() as string) ?? "all")
+
+  const handleSearchChange = (val: string) => {
+    if (server) server.onSearchChange(val)
+    else table.getColumn("word")?.setFilterValue(val)
+  }
+
+  const handleDifficultyChange = (val: string) => {
+    if (server) server.onDifficultyChange(val)
+    else table.getColumn("difficulty")?.setFilterValue(val === "all" ? undefined : val)
+  }
+
+  const totalLabel  = server ? server.total    : table.getFilteredRowModel().rows.length
+  const canPrev     = server ? server.page > 1 : table.getCanPreviousPage()
+  const canNext     = server ? server.page < server.pageCount : table.getCanNextPage()
+  const currentPage = server ? server.page     : table.getState().pagination.pageIndex + 1
+  const totalPages  = server ? server.pageCount : table.getPageCount()
 
   return (
     <div className="space-y-3">
@@ -70,17 +121,12 @@ export function WordsDataTable({ columns, data }: WordsDataTableProps) {
       <div className="flex gap-3 items-center">
         <Input
           placeholder="Cerca parola..."
-          value={(table.getColumn("word")?.getFilterValue() as string) ?? ""}
-          onChange={(e) => table.getColumn("word")?.setFilterValue(e.target.value)}
+          value={searchVal}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className="max-w-sm placeholder:text-sm"
         />
 
-        <Select
-          value={(table.getColumn("difficulty")?.getFilterValue() as string) ?? "all"}
-          onValueChange={(val) =>
-            table.getColumn("difficulty")?.setFilterValue(val === "all" ? undefined : val)
-          }
-        >
+        <Select value={difficultyVal} onValueChange={handleDifficultyChange}>
           <SelectTrigger className="w-40">
             <SelectValue placeholder="Difficoltà" />
           </SelectTrigger>
@@ -110,7 +156,13 @@ export function WordsDataTable({ columns, data }: WordsDataTableProps) {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {server?.loading ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
+                  Caricamento…
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
@@ -134,25 +186,25 @@ export function WordsDataTable({ columns, data }: WordsDataTableProps) {
       {/* Pagination */}
       <div className="flex items-center justify-between text-sm text-muted-foreground flex-shrink-0 pt-2">
         <span>
-          {table.getFilteredRowModel().rows.length} parole
+          {totalLabel} parole
         </span>
         <div className="flex gap-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => server ? server.onPageChange(server.page - 1) : table.previousPage()}
+            disabled={!canPrev}
           >
             ← Prev
           </Button>
           <span className="flex items-center px-2">
-            {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}
+            {currentPage} / {totalPages}
           </span>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() => server ? server.onPageChange(server.page + 1) : table.nextPage()}
+            disabled={!canNext}
           >
             Next →
           </Button>
