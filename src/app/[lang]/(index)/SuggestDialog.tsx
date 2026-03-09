@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import Link from "next/link";
 import { LocaleType } from "../getDictionary";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -112,7 +113,15 @@ export function SuggestDialog({
         <DialogHeader>
           <DialogTitle>Aggiungi nuovo suggerimento</DialogTitle>
           <DialogDescription>
-            Inserisci un nuovo suggerimento per il gioco
+            Grazie per voler contribuire! Compila il form qui sotto per suggerire una nuova parola.
+            Se hai dubbi su quale difficoltà scegliere, consulta la{" "}
+            <Link
+              href="/it/docs"
+              className="underline underline-offset-4 hover:text-foreground transition-colors"
+            >
+              guida alle parole
+            </Link>
+            .
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
@@ -186,10 +195,19 @@ export function SuggestDialog({
             </div>
           </div>
 
-          <DialogFooter>
-            <Button type="submit" disabled={suggestionSubmitting}>
+          <DialogFooter className="flex-col items-center gap-3 sm:flex-col">
+            <Button type="submit" disabled={suggestionSubmitting} className="w-full">
               {suggestionSubmitting ? "Invio…" : "Invia suggerimento"}
             </Button>
+            <p className="text-xs text-muted-foreground text-center">
+              Non sai come scegliere la difficoltà?{" "}
+              <Link
+                href="/it/docs"
+                className="underline underline-offset-4 hover:text-foreground transition-colors"
+              >
+                Leggi la guida
+              </Link>
+            </p>
           </DialogFooter>
         </form>
       </DialogContent>

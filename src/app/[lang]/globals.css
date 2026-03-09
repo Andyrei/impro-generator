@@ -39,6 +39,7 @@ body {
     --radius: 0.5rem;
   }
   .dark {
+    --muted-foreground: 0 0% 68%;   /* lighter gray for better contrast on dark bg */ 
     --background: 0 0% 0%;               /* pure black */
     --foreground: 0 0% 98%;             /* white */
 
