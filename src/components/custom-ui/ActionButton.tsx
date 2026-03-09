@@ -37,7 +37,7 @@ export default function ActionButton({
     setOpenDialog(true);
     try {
       // Fetch all difficulties (1-3 covers easy/med/hard) or use a dedicated endpoint
-      const res = await fetch(`./api/v1/words?action=${action}&limit=100`);
+      const res = await fetch(`/api/v1/words?action=${action}`);
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
       setWords(data.data ?? []);
