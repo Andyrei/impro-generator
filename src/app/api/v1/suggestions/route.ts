@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { auth } from "@/app/auth";
 import { connectDB } from "@/lib/db/mongodb";
 import WordSuggestion from "@/lib/db/models/wordSuggestion";
+import "@/lib/db/models/category";
 import { isAdmin } from "@/lib/isAdmin";
 import { getClientIp } from "@/lib/rateLimit";
 import { Difficulty, DIFFICULTIES } from "@/lib/db/types/word";
