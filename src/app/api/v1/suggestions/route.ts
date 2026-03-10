@@ -3,12 +3,48 @@ import mongoose from "mongoose";
 import { auth } from "@/app/auth";
 import { connectDB } from "@/lib/db/mongodb";
 import WordSuggestion from "@/lib/db/models/wordSuggestion";
+import Word from "@/lib/db/models/word";
 import "@/lib/db/models/category";
 import { isAdmin } from "@/lib/isAdmin";
 import { getClientIp } from "@/lib/rateLimit";
 import { Difficulty, DIFFICULTIES } from "@/lib/db/types/word";
 
 const ANON_SUGGESTION_LIMIT = 10;
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function normalizeItalianWord(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function getItalianWord(word: unknown): string | null {
+  if (!word || typeof word !== "object") return null;
+
+  if (word instanceof Map) {
+    return normalizeItalianWord(word.get("it"));
+  }
+
+  return normalizeItalianWord((word as Record<string, unknown>).it);
+}
+
+async function findExistingWordByItalian(italianWord: string): Promise<{ _id: string; it: string | null } | null> {
+  const existing = await Word.findOne({
+    "word.it": { $regex: `^${escapeRegex(italianWord)}$`, $options: "i" },
+  })
+    .select("_id word")
+    .lean();
+
+  if (!existing) return null;
+
+  return {
+    _id: String((existing as any)._id),
+    it: getItalianWord((existing as any).word),
+  };
+}
 
 // POST /api/v1/suggestions  { word: {en, it, ...}, category, difficulty }
 // Anyone can submit a word suggestion (anonymous or logged in)
@@ -80,5 +116,23 @@ export async function GET(req: NextRequest) {
     .sort({ createdAt: -1 })
     .lean();
 
-  return NextResponse.json({ data: suggestions });
+  const suggestionsWithDuplicateInfo = await Promise.all(
+    suggestions.map(async (suggestion) => {
+      const italianWord = getItalianWord((suggestion as any).word);
+      if (!italianWord) {
+        return {
+          ...suggestion,
+          existingWordMatch: null,
+        };
+      }
+
+      const existingWordMatch = await findExistingWordByItalian(italianWord);
+      return {
+        ...suggestion,
+        existingWordMatch,
+      };
+    })
+  );
+
+  return NextResponse.json({ data: suggestionsWithDuplicateInfo });
 }

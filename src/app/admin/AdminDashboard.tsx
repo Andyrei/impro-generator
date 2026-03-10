@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/select";
 import { ChevronDown, ChevronRight, Check, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { NotificationBell } from "@/components/custom-ui/NotificationBadge";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -37,6 +36,10 @@ interface Suggestion {
   status: "pending" | "approved" | "rejected";
   suggestedBy?: { name?: string; email?: string };
   createdAt: string;
+  existingWordMatch?: {
+    _id: string;
+    it: string | null;
+  } | null;
 }
 
 interface AdminDashboardProps {
@@ -402,16 +405,21 @@ function SuggestionsPanel() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleAction = async (id: string, status: "approved" | "rejected") => {
-    setActing(id);
+  const handleAction = async (suggestion: Suggestion, status: "approved" | "rejected") => {
+    if (status === "approved" && suggestion.existingWordMatch) {
+      toast.error("Questa parola esiste gia nel database. Rifiuta il suggerimento invece di approvarlo.");
+      return;
+    }
+
+    setActing(suggestion._id);
     try {
-      const res = await fetch(`/api/v1/suggestions/${id}`, {
+      const res = await fetch(`/api/v1/suggestions/${suggestion._id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
       if (!res.ok) throw new Error((await res.json()).error ?? "Errore");
-      setSuggestions((prev) => prev.filter((s) => s._id !== id));
+      setSuggestions((prev) => prev.filter((s) => s._id !== suggestion._id));
       toast.success(status === "approved" ? "Approvato e aggiunto" : "Rifiutato");
     } catch (e: any) {
       toast.error(e.message);
@@ -455,7 +463,15 @@ function SuggestionsPanel() {
                   <span className="uppercase text-xs mr-1">{lang}</span> {val}
                 </Badge>
               ))}
+              {s.existingWordMatch && (
+                <Badge variant="destructive">Gia presente in parole (word.it)</Badge>
+              )}
             </div>
+            {s.existingWordMatch && (
+              <p className="text-xs text-destructive">
+                Esiste gia: {s.existingWordMatch.it ?? s.word.it ?? "(word.it mancante)"}
+              </p>
+            )}
             <div className="flex gap-2 text-xs text-muted-foreground">
               <span>Categoria: {(s.category?.name?.it ?? s.category?.name?.en) ?? s.category?._id}</span>
               <span>·</span>
@@ -472,10 +488,10 @@ function SuggestionsPanel() {
             <Button
               size="icon"
               variant="outline"
-              className="text-green-600 border-green-600 hover:bg-green-50"
-              disabled={acting === s._id}
-              onClick={() => handleAction(s._id, "approved")}
-              title="Approva"
+              className={s.existingWordMatch ? "text-muted-foreground border-muted-foreground/40" : "text-green-600 border-green-600 hover:bg-green-50"}
+              disabled={acting === s._id || Boolean(s.existingWordMatch)}
+              onClick={() => handleAction(s, "approved")}
+              title={s.existingWordMatch ? "Parola gia presente: non approvabile" : "Approva"}
             >
               {acting === s._id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
             </Button>
@@ -484,7 +500,7 @@ function SuggestionsPanel() {
               variant="outline"
               className="text-destructive border-destructive hover:bg-destructive/10"
               disabled={acting === s._id}
-              onClick={() => handleAction(s._id, "rejected")}
+              onClick={() => handleAction(s, "rejected")}
               title="Rifiuta"
             >
               <X className="h-4 w-4" />
