@@ -17,11 +17,11 @@ export default function LevelChecker({className, level, setLevel}: {className?: 
     return (
         <div className={`h-10 relative ${className}`}>
 
-            {/* level checker */}
+            {/* level checker 
             <span
                 className="diamond absolute"
                 style={{ left: `${(indexMap[level] * (100/3)) + 16.66666}%` }}
-            ></span>
+            ></span>*/}
 
             {/* levels */}
             <div className="flex h-full">
